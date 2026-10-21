@@ -1,8 +1,7 @@
-import * as crypto from "crypto";
-import * as fs from "fs";
 import * as path from "path";
 import * as pulumi from "@pulumi/pulumi";
 import * as dokploy from "@dimeskigj/pulumi-dokploy";
+import { appRevision } from "./revision";
 
 export interface LanStatusArgs {
     /** Public hostname. Caddy on base42 picks it up from Dokploy and terminates TLS. */
@@ -16,24 +15,6 @@ export interface LanStatusArgs {
 
 const repoRoot = path.join(__dirname, "..", "..");
 
-// Content hash of the app directory: passed to Dokploy as an env var so a code change shows up as a
-// diff and redeploys. The code itself comes from GitHub, so push before `up`.
-function hashDir(dir: string): string {
-    const hash = crypto.createHash("sha256");
-    const walk = (rel: string) => {
-        for (const entry of fs.readdirSync(path.join(dir, rel), { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
-            if (entry.name === "node_modules") continue;
-            const child = path.join(rel, entry.name);
-            if (entry.isDirectory()) walk(child);
-            else {
-                hash.update(child).update("\0").update(fs.readFileSync(path.join(dir, child))).update("\0");
-            }
-        }
-    };
-    walk("");
-    return hash.digest("hex");
-}
-
 /** Public status board for the LAN game servers (apps/lan-status), built by Dokploy from Git. */
 export class LanStatus extends pulumi.ComponentResource {
     public readonly url: pulumi.Output<string>;
@@ -41,6 +22,12 @@ export class LanStatus extends pulumi.ComponentResource {
     constructor(name: string, args: LanStatusArgs, opts?: pulumi.ComponentResourceOptions) {
         super("base42:dokploy:LanStatus", name, {}, opts);
         const parent = { parent: this };
+
+        // Redeploys follow the app's tree on origin/<branch> (what Dokploy builds), not local files.
+        const { revision, upToDate } = appRevision(repoRoot, args.branch, args.appDir);
+        if (!upToDate) {
+            pulumi.log.warn(`${args.appDir} has changes that are not on origin/${args.branch}; Dokploy builds from GitHub, so push first and re-run`, this);
+        }
 
         const project = new dokploy.Project(name, {
             name: "lan-status",
@@ -61,7 +48,7 @@ export class LanStatus extends pulumi.ComponentResource {
                     build: { type: "dockerfile", dockerfile: "Dockerfile", dockerContextPath: "." },
                 },
             },
-            environment: `APP_REVISION=${hashDir(path.join(repoRoot, args.appDir))}\n`,
+            environment: `APP_REVISION=${revision}\n`,
         }, parent);
 
         new dokploy.Domain(name, {

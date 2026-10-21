@@ -129,6 +129,8 @@ description = "Build + install the CS 1.6 stack for a mode on its server: mise r
 run = "bash games/cs16/deploy.sh"
 
 [tasks."lan-status:test"]
-description = "Run the LAN status site's unit tests"
-dir = "{{config_root}}/apps/lan-status"
-run = "npm test"
+description = "Run the LAN status site's tests (app + Pulumi revision helper)"
+run = """
+cd apps/lan-status && npm test
+cd ../../dokploy && node --test lan-status/revision.test.ts
+"""
