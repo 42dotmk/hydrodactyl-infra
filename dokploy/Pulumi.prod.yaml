@@ -6,4 +6,5 @@ config:
   hydrodactyl:serviceAuthor: noreply@42.mk
   dokploy:apiKey:
     secure: v1:ShLTcgdAiIoQ0WGu:MrGoAVnaxRPrYMu2VITCnpKXBE1YUG2kX/TNSk+if2+nvJBxz81EQmnUKFqPSC66PyXQBoA3+b5tHVR8WdQIAWjc/CsGdjamy50+ow4YIiuecx1zSA==
+  lan-status:host: lan.apps.42.mk
 encryptionsalt: v1:OKaTrQ1KLDM=:v1:Pr06QDvPDgx6ptIT:bsNW3ARij8+VX310X/9AfyDaneem9A==
