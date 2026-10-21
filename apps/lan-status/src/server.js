@@ -14,6 +14,7 @@ const STATIC = {
     "/": ["index.html", "text/html; charset=utf-8"],
     "/app.js": ["app.js", "text/javascript; charset=utf-8"],
     "/style.css": ["style.css", "text/css; charset=utf-8"],
+    "/render.js": ["render.js", "text/javascript; charset=utf-8"],
 };
 
 export function createServer({ poller, publicDir }) {

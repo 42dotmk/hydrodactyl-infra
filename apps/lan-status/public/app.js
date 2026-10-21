@@ -1,6 +1,9 @@
 // Renders /api/status. Every value goes in through textContent: server-reported strings
 // (map names, hostnames) are never interpreted as HTML.
+import { statusText, playersText } from "/render.js";
+
 const REFRESH_MS = 15000;
+const FIRST_POLL_RETRY_MS = 3000; // right after a deploy, the first poll lands within ~3 s
 let updatedAt = null;
 let fetchFailed = false;
 
@@ -11,19 +14,13 @@ function el(tag, attrs = {}, text) {
     return node;
 }
 
-function playersText(s) {
-    if (!s.online) return "—";
-    const max = s.maxPlayers != null ? `/${s.maxPlayers}` : "";
-    return s.bots > 0 ? `${s.players}${max} + ${s.bots} bots` : `${s.players}${max}`;
-}
-
 function card(s) {
-    const root = el("article", { class: `card ${s.online ? "online" : "offline"}` });
+    const root = el("article", { class: `card ${s.online ? "online" : s.checkedAt === null ? "checking" : "offline"}` });
     const title = el("h2");
     title.append(el("span", { class: "dot", "aria-hidden": "true" }), el("span", {}, s.name));
     const details = el("dl");
     const rows = [
-        ["Status", s.online ? "online" : "offline"],
+        ["Status", statusText(s)],
         ["Map", s.online && s.map ? s.map : "—"],
         ["Players", playersText(s)],
         ["Join", s.address],
@@ -67,6 +64,10 @@ async function refresh() {
     }
 }
 
-refresh();
-setInterval(refresh, REFRESH_MS);
+async function loop() {
+    await refresh();
+    setTimeout(loop, updatedAt ? REFRESH_MS : FIRST_POLL_RETRY_MS);
+}
+
+loop();
 setInterval(renderUpdated, 1000);

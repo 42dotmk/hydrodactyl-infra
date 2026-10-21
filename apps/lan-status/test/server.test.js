@@ -58,6 +58,7 @@ test("GET / serves the page with security headers", async () => {
 test("static assets are served with their content types", async () => {
     assert.match((await fetch(`${base}/app.js`)).headers.get("content-type"), /^text\/javascript/);
     assert.match((await fetch(`${base}/style.css`)).headers.get("content-type"), /^text\/css/);
+    assert.match((await fetch(`${base}/render.js`)).headers.get("content-type"), /^text\/javascript/);
 });
 
 test("unknown and traversal paths return 404", async () => {
