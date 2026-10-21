@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-21T15:11:08.726173+00:00",
+  "title": "Design System: 42.mk LAN",
+  "extensions": {
+    "colorMeta": {
+      "steam-yellow": {
+        "role": "primary",
+        "displayName": "Steam Yellow",
+        "canonical": "#dccd5a",
+        "tonalRamp": [
+          "oklch(15% 0.12 100)",
+          "oklch(26% 0.12 100)",
+          "oklch(37% 0.12 100)",
+          "oklch(48% 0.12 100)",
+          "oklch(59% 0.12 100)",
+          "oklch(70% 0.12 100)",
+          "oklch(82% 0.12 100)",
+          "oklch(95% 0.12 100)"
+        ]
+      },
+      "olive-ground": {
+        "role": "neutral",
+        "displayName": "Olive Ground",
+        "canonical": "#3e4637",
+        "tonalRamp": [
+          "oklch(15% 0.025 125)",
+          "oklch(26% 0.025 125)",
+          "oklch(37% 0.025 125)",
+          "oklch(48% 0.025 125)",
+          "oklch(59% 0.025 125)",
+          "oklch(70% 0.025 125)",
+          "oklch(82% 0.025 125)",
+          "oklch(95% 0.025 125)"
+        ]
+      },
+      "vgui-panel": {
+        "role": "neutral",
+        "displayName": "VGUI Panel",
+        "canonical": "#4c5844",
+        "tonalRamp": [
+          "oklch(15% 0.025 125)",
+          "oklch(26% 0.025 125)",
+          "oklch(37% 0.025 125)",
+          "oklch(48% 0.025 125)",
+          "oklch(59% 0.025 125)",
+          "oklch(70% 0.025 125)",
+          "oklch(82% 0.025 125)",
+          "oklch(95% 0.025 125)"
+        ]
+      },
+      "row-stripe": {
+        "role": "neutral",
+        "displayName": "Row Stripe",
+        "canonical": "#3f4837",
+        "tonalRamp": [
+          "oklch(15% 0.025 125)",
+          "oklch(26% 0.025 125)",
+          "oklch(37% 0.025 125)",
+          "oklch(48% 0.025 125)",
+          "oklch(59% 0.025 125)",
+          "oklch(70% 0.025 125)",
+          "oklch(82% 0.025 125)",
+          "oklch(95% 0.025 125)"
+        ]
+      },
+      "selected-row": {
+        "role": "neutral",
+        "displayName": "Selected Row",
+        "canonical": "#292c21",
+        "tonalRamp": [
+          "oklch(15% 0.025 125)",
+          "oklch(26% 0.025 125)",
+          "oklch(37% 0.025 125)",
+          "oklch(48% 0.025 125)",
+          "oklch(59% 0.025 125)",
+          "oklch(70% 0.025 125)",
+          "oklch(82% 0.025 125)",
+          "oklch(95% 0.025 125)"
+        ]
+      },
+      "bevel-light": {
+        "role": "neutral",
+        "displayName": "Bevel Light",
+        "canonical": "#8c9284",
+        "tonalRamp": [
+          "oklch(15% 0.025 125)",
+          "oklch(26% 0.025 125)",
+          "oklch(37% 0.025 125)",
+          "oklch(48% 0.025 125)",
+          "oklch(59% 0.025 125)",
+          "oklch(70% 0.025 125)",
+          "oklch(82% 0.025 125)",
+          "oklch(95% 0.025 125)"
+        ]
+      },
+      "bevel-dark": {
+        "role": "neutral",
+        "displayName": "Bevel Dark",
+        "canonical": "#292c21",
+        "tonalRamp": [
+          "oklch(15% 0.025 125)",
+          "oklch(26% 0.025 125)",
+          "oklch(37% 0.025 125)",
+          "oklch(48% 0.025 125)",
+          "oklch(59% 0.025 125)",
+          "oklch(70% 0.025 125)",
+          "oklch(82% 0.025 125)",
+          "oklch(95% 0.025 125)"
+        ]
+      },
+      "console-text": {
+        "role": "neutral",
+        "displayName": "Console Text",
+        "canonical": "#dee5d7",
+        "tonalRamp": [
+          "oklch(15% 0.025 125)",
+          "oklch(26% 0.025 125)",
+          "oklch(37% 0.025 125)",
+          "oklch(48% 0.025 125)",
+          "oklch(59% 0.025 125)",
+          "oklch(70% 0.025 125)",
+          "oklch(82% 0.025 125)",
+          "oklch(95% 0.025 125)"
+        ]
+      },
+      "muted-text": {
+        "role": "neutral",
+        "displayName": "Muted Text",
+        "canonical": "#c6cdbe",
+        "tonalRamp": [
+          "oklch(15% 0.025 125)",
+          "oklch(26% 0.025 125)",
+          "oklch(37% 0.025 125)",
+          "oklch(48% 0.025 125)",
+          "oklch(59% 0.025 125)",
+          "oklch(70% 0.025 125)",
+          "oklch(82% 0.025 125)",
+          "oklch(95% 0.025 125)"
+        ]
+      },
+      "lamp-on": {
+        "role": "status",
+        "displayName": "Lamp On",
+        "canonical": "#9fd65b",
+        "tonalRamp": [
+          "oklch(15% 0.15 130)",
+          "oklch(26% 0.15 130)",
+          "oklch(37% 0.15 130)",
+          "oklch(48% 0.15 130)",
+          "oklch(59% 0.15 130)",
+          "oklch(70% 0.15 130)",
+          "oklch(82% 0.15 130)",
+          "oklch(95% 0.15 130)"
+        ]
+      },
+      "lamp-wait": {
+        "role": "status",
+        "displayName": "Lamp Wait",
+        "canonical": "#c4b550",
+        "tonalRamp": [
+          "oklch(15% 0.11 100)",
+          "oklch(26% 0.11 100)",
+          "oklch(37% 0.11 100)",
+          "oklch(48% 0.11 100)",
+          "oklch(59% 0.11 100)",
+          "oklch(70% 0.11 100)",
+          "oklch(82% 0.11 100)",
+          "oklch(95% 0.11 100)"
+        ]
+      },
+      "lamp-off": {
+        "role": "status",
+        "displayName": "Lamp Off",
+        "canonical": "#6b7262",
+        "tonalRamp": [
+          "oklch(15% 0.02 125)",
+          "oklch(26% 0.02 125)",
+          "oklch(37% 0.02 125)",
+          "oklch(48% 0.02 125)",
+          "oklch(59% 0.02 125)",
+          "oklch(70% 0.02 125)",
+          "oklch(82% 0.02 125)",
+          "oklch(95% 0.02 125)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Title bar name only."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Server names and status summary."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Base text; 16px at <=640px."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Window chrome: headers, tab, button, hint."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Server-reported values: maps, join addresses."
+      }
+    },
+    "shadows": [
+      {
+        "name": "bevel-raised",
+        "value": "border-color: #8c9284 #292c21 #292c21 #8c9284 (1px)",
+        "purpose": "Frames and controls."
+      },
+      {
+        "name": "bevel-sunken",
+        "value": "border-color: #292c21 #8c9284 #8c9284 #292c21 (1px)",
+        "purpose": "Data wells: status bar, server list, pressed button."
+      },
+      {
+        "name": "lamp-highlight",
+        "value": "inset 1px 1px 0 rgba(255,255,255,0.25)",
+        "purpose": "Status lamp face."
+      }
+    ],
+    "motion": [],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "640px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "VGUI Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Raised-bevel push button; pressed flips to sunken.",
+      "html": "<button class=\"ds-btn\">Refresh</button>",
+      "css": ".ds-btn{font-family:Tahoma,'LAN UI',Verdana,sans-serif;font-size:13px;color:#dee5d7;background:#4c5844;padding:4px 18px;border:1px solid;border-color:var(--bevel-light,#8c9284) var(--bevel-dark,#292c21) var(--bevel-dark,#292c21) var(--bevel-light,#8c9284);border-radius:0;cursor:pointer}.ds-btn:hover{color:#dccd5a}.ds-btn:focus-visible{outline:1px dotted #dccd5a;outline-offset:2px}.ds-btn:active{border-color:#292c21 #8c9284 #8c9284 #292c21;padding:5px 17px 3px 19px}.ds-btn:disabled{color:#c6cdbe;cursor:progress}"
+    },
+    {
+      "name": "LAN Tab",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Single raised tab attached to the list below.",
+      "html": "<div class=\"ds-tabs\"><span class=\"ds-tab\">LAN</span></div><div class=\"ds-tabbody\"></div>",
+      "css": ".ds-tabs{display:flex;background:#4c5844;padding:8px 8px 0}.ds-tab{position:relative;top:1px;font-family:Tahoma,'LAN UI',Verdana,sans-serif;font-size:13px;padding:3px 14px 4px;color:#dccd5a;background:#4c5844;border:1px solid;border-color:#8c9284 #292c21 #4c5844 #8c9284}.ds-tabbody{height:24px;margin:0 8px 8px;background:#3e4637;border:1px solid;border-color:var(--bevel-dark,#292c21) var(--bevel-light,#8c9284) var(--bevel-light,#8c9284) var(--bevel-dark,#292c21);}"
+    },
+    {
+      "name": "Status Bar",
+      "kind": "custom",
+      "refersTo": "status-bar",
+      "description": "Sunken strip: bold summary left, muted timestamp right.",
+      "html": "<p class=\"ds-status\"><span>6 of 6 servers online · 0 players</span><span class=\"ds-upd\">updated 12s ago</span></p>",
+      "css": ".ds-status{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 16px;margin:0;padding:5px 8px;font-family:Tahoma,'LAN UI',Verdana,sans-serif;font-size:15px;font-weight:700;color:#dee5d7;background:#3e4637;border:1px solid;border-color:var(--bevel-dark,#292c21) var(--bevel-light,#8c9284) var(--bevel-light,#8c9284) var(--bevel-dark,#292c21);}.ds-upd{color:#c6cdbe;font-weight:400;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Server List",
+      "kind": "custom",
+      "refersTo": "list-row",
+      "description": "Sunken table, raised headers, striped rows, square lamps; online / checking / offline / unknown states.",
+      "html": "<table class=\"ds-list\"><thead><tr><th></th><th>Server</th><th>Map</th><th class=\"ds-num\">Players</th><th>Join</th></tr></thead><tbody><tr class=\"on\"><td><i></i></td><td class=\"s\">CS 1.6 Classic</td><td class=\"m\">fy_snow</td><td class=\"ds-num\">0/20<span class=\"b\"> +10 bots</span></td><td class=\"j\">192.168.101.39:27015</td></tr><tr class=\"wait\"><td><i></i></td><td class=\"s\">Half-Life 2: Deathmatch</td><td class=\"m\"></td><td class=\"ds-num\">checking…</td><td class=\"j\">192.168.101.39:27016</td></tr><tr class=\"off\"><td><i></i></td><td class=\"s\">Minecraft (Paper)</td><td class=\"m\"></td><td class=\"ds-num\">offline</td><td class=\"j\">192.168.101.39:25565</td></tr></tbody></table>",
+      "css": ".ds-list{width:100%;border-collapse:collapse;font-family:Tahoma,'LAN UI',Verdana,sans-serif;font-size:15px;line-height:1.45;color:#dee5d7;background:#3e4637;border:1px solid;border-color:var(--bevel-dark,#292c21) var(--bevel-light,#8c9284) var(--bevel-light,#8c9284) var(--bevel-dark,#292c21);font-variant-numeric:tabular-nums}.ds-list th{padding:4px 8px;text-align:left;font-size:13px;font-weight:400;background:#4c5844;border:1px solid;border-color:var(--bevel-light,#8c9284) var(--bevel-dark,#292c21) var(--bevel-dark,#292c21) var(--bevel-light,#8c9284);}.ds-list td{padding:6px 8px;border-bottom:1px solid #292c21}.ds-list tbody tr:nth-child(odd){background:#3f4837}.ds-list tbody tr:nth-child(even){background:#4c5844}.ds-list tbody tr:hover{background:#292c21}.ds-list tbody tr:hover .s{color:#dccd5a}.ds-num{text-align:right!important;white-space:nowrap}.ds-list .s{font-weight:700}.ds-list .m,.ds-list .j{font-family:'Lucida Console','DejaVu Sans Mono',Consolas,monospace;font-size:14px}.ds-list .j{color:#dccd5a;user-select:all}.ds-list .b{color:#c6cdbe}.ds-list i{display:inline-block;width:9px;height:9px;background:#6b7262;border:1px solid #292c21;box-shadow:inset 1px 1px 0 rgba(255,255,255,.25)}.ds-list .on i{background:#9fd65b}.ds-list .wait i{background:#c4b550}.ds-list .off td:not(:first-child){color:#c6cdbe;font-weight:400}"
+    },
+    {
+      "name": "Title Bar",
+      "kind": "custom",
+      "description": "Window title: the name alone in Steam yellow bold.",
+      "html": "<header class=\"ds-title\"><h1>42.mk LAN</h1></header>",
+      "css": ".ds-title{padding:10px 12px 9px;background:#4c5844;border-bottom:1px solid #292c21}.ds-title h1{margin:0;font-family:Tahoma,'LAN UI',Verdana,sans-serif;font-size:22px;font-weight:700;letter-spacing:.02em;color:#dccd5a}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Server Browser on LAN Night, 2003",
+    "overview": "The page is one bevelled VGUI window, the Half-Life / CS 1.6 server browser, sitting on an olive ground, with a clan-site wall of 88x31 buttons below it. The world is drawn from its own materials: olive panels, 1px two-tone bevels, Tahoma, square status lamps, and one Steam yellow. It is dense, flat and square, and plainly legible. The live state of the servers is the only content.\n\nIt is not a status dashboard, so there are no metric tiles, cards or rounded panels. It is not the fake Matrix/neon look either: no glow, no green-on-black, no scanlines. Readability on a phone is a hard requirement, and every colour pair clears 4.6:1.",
+    "keyCharacteristics": [
+      "One bevelled window, with nothing nested inside it except sunken strips (status bar, list).",
+      "1px bevels, raised or sunken, are the only way to show depth.",
+      "Steam yellow marks only what the visitor acts on or must find: the title, the tab, the join addresses, hover and selection.",
+      "Server-reported data (maps, addresses) is set in a console monospace. Everything else uses the UI sans.",
+      "The status copy is honest. \"checking…\" is not \"offline\", and stale or unreachable data says so."
+    ],
+    "rules": [
+      {
+        "name": "The One Yellow Rule",
+        "body": "Steam yellow is the only accent. A new highlight reuses it and is never a new hue.",
+        "section": "colors"
+      },
+      {
+        "name": "The Honest Lamp Rule",
+        "body": "A row never claims to be online when the snapshot can't be trusted. When the data is stale or unreachable, every row goes to the wait lamp, muted text and \"?\" players, and the status bar says why.",
+        "section": "colors"
+      },
+      {
+        "name": "The Chrome Is Small Rule",
+        "body": "The window's controls and furniture sit at 13px. Only data and server names reach body size.",
+        "section": "typography"
+      },
+      {
+        "name": "The Still One List Rule",
+        "body": "At <=640px the table stays one list. The header row is visually hidden. Each row becomes a grid with the lamp, server and players on the first line, and \"map …\" and the join address on the lines below (the map line is dropped when empty). Refresh grows to a 44px touch height.",
+        "section": "layout"
+      },
+      {
+        "name": "The Bevel Grammar Rule",
+        "body": "Raised means it's a control or a frame. Sunken means it holds data. Pressing a button flips it from raised to sunken and shifts its label by 1px.",
+        "section": "elevation"
+      },
+      {
+        "name": "The No Glyph Rule",
+        "body": "Status lamps are drawn boxes, never emoji, icon-font glyphs or circles.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** build every new surface from the bevel grammar: raised for frames and controls, sunken for data.",
+      "**Do** keep Steam yellow for the title, the tab, the join addresses and interaction feedback.",
+      "**Do** set server-reported values in the data monospace with tabular figures.",
+      "**Do** self-host every font and image (the CSP is `default-src 'self'`).",
+      "**Do** keep every text and background pair at or above 4.6:1, on both row stripes."
+    ],
+    "donts": [
+      "**Don't** add cards, metric tiles, rounded corners or soft drop shadows. This is a server browser, not a dashboard.",
+      "**Don't** use glow, neon green-on-black, scanlines or other fake-Matrix \"hacker\" styling.",
+      "**Don't** show a green lamp or \"online\" when the snapshot is stale or unreachable.",
+      "**Don't** split the list into per-server cards on phones. Reflow rows instead.",
+      "**Don't** introduce a second accent hue or a display face beyond Tahoma bold."
+    ]
+  }
+}

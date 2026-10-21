@@ -1,73 +1,94 @@
-// Renders /api/status. Every value goes in through textContent: server-reported strings
-// (map names, hostnames) are never interpreted as HTML.
-import { statusText, playersText } from "/render.js";
+// Renders /api/status into the server list. Every value goes in through textContent: server-reported
+// strings (map names, hostnames) are never interpreted as HTML.
+import { REFRESH_MS, statusText, playersText, freshness, summaryText, updatedText } from "/render.js";
 
-const REFRESH_MS = 15000;
 const FIRST_POLL_RETRY_MS = 3000; // right after a deploy, the first poll lands within ~3 s
-let updatedAt = null;
+let snapshot = { updatedAt: null, summary: { online: 0, total: 0, players: 0 }, servers: [] };
 let fetchFailed = false;
+let shownState = null;
+let shownAt = null;
+let inFlight = false;
 
-function el(tag, attrs = {}, text) {
-    const node = document.createElement(tag);
-    for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
-    if (text !== undefined) node.textContent = text;
-    return node;
+function cell(className, text) {
+    const td = document.createElement("td");
+    td.setAttribute("role", "cell");
+    td.className = className;
+    if (text !== undefined) td.textContent = text;
+    return td;
 }
 
-function card(s) {
-    const root = el("article", { class: `card ${s.online ? "online" : s.checkedAt === null ? "checking" : "offline"}` });
-    const title = el("h2");
-    title.append(el("span", { class: "dot", "aria-hidden": "true" }), el("span", {}, s.name));
-    const details = el("dl");
-    const rows = [
-        ["Status", statusText(s)],
-        ["Map", s.online && s.map ? s.map : "—"],
-        ["Players", playersText(s)],
-        ["Join", s.address],
-    ];
-    for (const [label, value] of rows) {
-        details.append(el("dt", {}, label), el("dd", label === "Join" ? { class: "address" } : {}, value));
+function row(s, trusted) {
+    // When the snapshot itself is stale or unreachable, no row may claim to be online.
+    const state = !trusted ? "unknown" : s.online ? "online" : s.checkedAt === null ? "checking" : "offline";
+    const tr = document.createElement("tr");
+    tr.setAttribute("role", "row");
+    tr.className = state;
+
+    const lamp = cell("lamp");
+    const light = document.createElement("i");
+    light.setAttribute("aria-hidden", "true");
+    const label = document.createElement("span");
+    label.className = "sr";
+    label.textContent = trusted ? statusText(s) : "unknown";
+    lamp.append(light, label);
+
+    const players = cell("num");
+    if (!trusted) {
+        players.textContent = "?";
+    } else if (s.online && s.bots > 0) {
+        const max = s.maxPlayers != null ? `/${s.maxPlayers}` : "";
+        const bots = document.createElement("span");
+        bots.className = "bots";
+        bots.textContent = ` +${s.bots} ${s.bots === 1 ? "bot" : "bots"}`;
+        players.append(`${s.players}${max}`, bots);
+    } else {
+        players.textContent = s.online ? playersText(s) : statusText(s);
     }
-    root.append(title, details);
-    return root;
+
+    const map = trusted && s.online && s.map ? s.map : "";
+    tr.append(lamp, cell("server", s.name), cell("map", map), players, cell("join", s.address));
+    return tr;
 }
 
-function ago(iso) {
-    const seconds = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 1000));
-    return seconds < 60 ? `${seconds}s ago` : `${Math.round(seconds / 60)} min ago`;
-}
-
-function renderUpdated() {
-    const text = fetchFailed ? "status service unreachable – retrying" : updatedAt ? `updated ${ago(updatedAt)}` : "";
-    document.getElementById("updated").textContent = text;
-}
-
-function render(snapshot) {
-    updatedAt = snapshot.updatedAt;
-    const { online, total, players } = snapshot.summary;
-    document.getElementById("summary").textContent = updatedAt
-        ? `${online} of ${total} servers online · ${players} ${players === 1 ? "player" : "players"}`
-        : "checking servers…";
-    document.getElementById("servers").replaceChildren(...snapshot.servers.map(card));
-    renderUpdated();
+// Re-render rows only when what they may claim changes, so selecting an address is not reset every second.
+function render() {
+    const now = Date.now();
+    const state = freshness({ updatedAt: snapshot.updatedAt, fetchFailed }, now);
+    document.getElementById("summary").textContent = summaryText(snapshot, state);
+    document.getElementById("updated").textContent = updatedText(snapshot.updatedAt, state, now);
+    document.querySelector(".window").dataset.state = state;
+    if (state !== shownState || snapshot.updatedAt !== shownAt) {
+        const trusted = state === "fresh" || state === "pending";
+        document.getElementById("servers").replaceChildren(...snapshot.servers.map((s) => row(s, trusted)));
+        shownState = state;
+        shownAt = snapshot.updatedAt;
+    }
 }
 
 async function refresh() {
+    if (inFlight) return;
+    inFlight = true;
+    const button = document.getElementById("refresh");
+    button.disabled = true;
     try {
         const res = await fetch("/api/status", { cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        snapshot = await res.json();
         fetchFailed = false;
-        render(await res.json());
     } catch {
         fetchFailed = true;
-        renderUpdated();
+    } finally {
+        inFlight = false;
+        button.disabled = false;
+        render();
     }
 }
 
 async function loop() {
     await refresh();
-    setTimeout(loop, updatedAt ? REFRESH_MS : FIRST_POLL_RETRY_MS);
+    setTimeout(loop, snapshot.updatedAt ? REFRESH_MS : FIRST_POLL_RETRY_MS);
 }
 
+document.getElementById("refresh").addEventListener("click", refresh);
 loop();
-setInterval(renderUpdated, 1000);
+setInterval(render, 1000);

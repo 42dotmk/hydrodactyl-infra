@@ -3,20 +3,65 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>42.mk LAN</title>
+    <title>42.mk LAN :: servers</title>
     <meta name="description" content="Live status of the 42.mk LAN party game servers">
+    <meta name="color-scheme" content="dark">
     <link rel="stylesheet" href="/style.css">
     <script type="module" src="/app.js"></script>
 </head>
 <body>
-    <header>
-        <h1>42.mk <span>LAN</span></h1>
-        <p id="summary" class="summary">checking servers…</p>
-        <p id="updated" class="updated"></p>
-    </header>
-    <main id="servers" class="servers" aria-live="polite"></main>
-    <footer>
-        <p>Join from inside the LAN with the address shown on each server.</p>
+<!--
+THESIS: the page is the server browser this crowd had open every LAN night in 2003 - one bevelled
+list of servers - and refuses the status-dashboard default of metric tiles and cards.
+OWN-WORLD: Half-Life / CS 1.6 VGUI: olive ground #3e4637, panel #4c5844, 1px bevels (light #8c9284
+top-left, dark #292c21 bottom-right), Tahoma/DejaVu Sans, Steam yellow #dccd5a for the one highlight,
+square status lamps, a row of 88x31 buttons like every clan site's footer.
+STORY: visitor sees what is up, how full it is and which map, then walks in and joins at the address.
+FIRST VIEWPORT: clan-site title bar "42.mk LAN", status bar (N of M online, players, updated), then the
+full-width server list under a single LAN tab (lamp, server, map, players, join address) with Refresh;
+the buttons row closes the page.
+FORM: pinned by the user (old-school LAN party web: server browser + clan site); roll seed 924c0c6f.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->
+    <div class="window">
+        <header class="titlebar">
+            <h1>42.mk LAN</h1>
+        </header>
+
+        <p class="statusbar">
+            <span id="summary">checking servers…</span>
+            <span id="updated" class="updated"></span>
+        </p>
+
+        <div class="tabs" role="presentation"><span class="tab">LAN</span></div>
+        <table class="serverlist" role="table" aria-describedby="summary">
+            <thead>
+                <tr role="row">
+                    <th scope="col" role="columnheader"><span class="sr">Status</span></th>
+                    <th scope="col" role="columnheader">Server</th>
+                    <th scope="col" role="columnheader">Map</th>
+                    <th scope="col" role="columnheader" class="num">Players</th>
+                    <th scope="col" role="columnheader">Join</th>
+                </tr>
+            </thead>
+            <tbody id="servers"></tbody>
+        </table>
+
+        <div class="footbar">
+            <p class="hint">Join from inside the LAN at the address shown. Refreshes every 15&nbsp;seconds.</p>
+            <button type="button" id="refresh">Refresh</button>
+        </div>
+    </div>
+
+    <footer class="buttons" aria-label="88x31 buttons">
+        <img src="/badges/counter-strike.gif" width="88" height="31" alt="Counter-Strike">
+        <img src="/badges/lanparty.gif" width="88" height="31" alt="LANPARTY.COM">
+        <img src="/badges/get-frags-now.gif" width="88" height="31" alt="Get Frags Now!">
+        <img src="/badges/telefragged.gif" width="88" height="31" alt="Telefragged">
+        <img src="/badges/greatest-fps-page.gif" width="88" height="31" alt="Greatest FPS Page">
+        <img src="/badges/cs-configs.gif" width="88" height="31" alt="CS Configs">
+        <img src="/badges/linux-now.jpg" width="88" height="31" alt="Linux Now!">
+        <img src="/badges/any-html-browser.png" width="88" height="31" alt="Any HTML Browser">
     </footer>
 </body>
 </html>

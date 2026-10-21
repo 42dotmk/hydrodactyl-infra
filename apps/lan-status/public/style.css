@@ -1,56 +1,241 @@
+/* Half-Life / CS 1.6 VGUI server browser, on an early-2000s LAN party page. */
+
+/* DejaVu Sans (Vera lineage, Latin subset) carries the Tahoma/Verdana voice where neither exists. */
+@font-face {
+    font-family: "LAN UI";
+    src: url("/fonts/dejavu-sans.woff2") format("woff2");
+    font-weight: 400;
+    font-display: swap;
+}
+@font-face {
+    font-family: "LAN UI";
+    src: url("/fonts/dejavu-sans-bold.woff2") format("woff2");
+    font-weight: 700;
+    font-display: swap;
+}
+
 :root {
-    --bg: #f4f5f7;
-    --card: #ffffff;
-    --text: #1d2129;
-    --muted: #616a78;
-    --border: #e1e4ea;
-    --online: #1f9d55;
-    --offline: #9aa3b0;
-    --accent: #4f46e5;
+    --ground: #3e4637;
+    --panel: #4c5844;
+    --row: #3f4837;
+    --row-alt: #4c5844; /* = panel; text, muted and highlight all >= 4.6:1 on both stripes */
+    --selected: #292c21;
+    --text: #dee5d7;
+    --muted: #c6cdbe; /* >= 4.6:1 on panel, row and ground */
+    --highlight: #dccd5a; /* Steam yellow, lifted to >= 4.6:1 */
+    --bevel-light: #8c9284;
+    --bevel-dark: #292c21;
+    --lamp-on: #9fd65b;
+    --lamp-off: #6b7262;
+    --lamp-wait: #c4b550;
+    --ui: Tahoma, "LAN UI", Verdana, sans-serif;
+    --data: "Lucida Console", "DejaVu Sans Mono", Consolas, monospace;
 }
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg: #0f1218;
-        --card: #181c24;
-        --text: #e7e9ee;
-        --muted: #9aa3b0;
-        --border: #262c38;
-        --online: #3ccf7e;
-        --offline: #5b6474;
-        --accent: #8b85ff;
-    }
-}
+
 * { box-sizing: border-box; }
+
+html { background: var(--ground); scrollbar-color: var(--bevel-light) var(--ground); }
+
+/* centred in the viewport when it fits; a taller page (phones) just scrolls from the top */
 body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
     margin: 0;
-    background: var(--bg);
+    padding: 24px 16px 32px;
     color: var(--text);
-    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font: 15px/1.45 var(--ui);
+    background: var(--ground);
 }
-header, main, footer { max-width: 960px; margin: 0 auto; padding: 0 16px; }
-header { padding-top: 40px; padding-bottom: 16px; }
-h1 { margin: 0; font-size: 2rem; letter-spacing: -0.02em; }
-h1 span { color: var(--accent); }
-.summary { margin: 8px 0 0; font-size: 1.15rem; font-weight: 600; }
-.updated { margin: 2px 0 0; color: var(--muted); font-size: 0.875rem; min-height: 1.3em; }
-.servers {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 12px;
-    padding-bottom: 24px;
+
+body > * { width: 100%; } /* auto side margins would otherwise shrink flex items to their content */
+
+::selection { background: var(--highlight); color: var(--bevel-dark); }
+
+:focus-visible { outline: 1px dotted var(--highlight); outline-offset: 2px; }
+
+.sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }
-.card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
+
+/* the window: one bevelled VGUI frame, nothing nested inside it */
+.window {
+    max-width: 920px;
+    margin: 0 auto;
+    background: var(--panel);
+    border: 1px solid;
+    border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
 }
-.card.offline { opacity: 0.7; }
-.card h2 { margin: 0 0 8px; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
-.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--offline); flex: none; }
-.online .dot { background: var(--online); box-shadow: 0 0 0 3px color-mix(in srgb, var(--online) 25%, transparent); }
-.card dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 0.925rem; }
-.card dt { color: var(--muted); }
-.card dd { margin: 0; overflow-wrap: anywhere; }
-.address { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.875rem; }
-footer { color: var(--muted); font-size: 0.875rem; padding-bottom: 40px; }
+
+.titlebar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    padding: 10px 12px 9px;
+    border-bottom: 1px solid var(--bevel-dark);
+}
+
+h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--highlight);
+}
+
+/* status bar, sunken like the strip under the server list */
+.statusbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2px 16px;
+    margin: 10px 12px;
+    padding: 5px 8px;
+    background: var(--ground);
+    border: 1px solid;
+    border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+    font-weight: 700;
+}
+
+.updated { color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; }
+
+/* a single tab, as in the VGUI server browser: this list only ever shows the LAN */
+.tabs { margin: 0 12px; display: flex; }
+.tab {
+    position: relative;
+    top: 1px;
+    padding: 3px 14px 4px;
+    font-size: 13px;
+    color: var(--highlight);
+    background: var(--panel);
+    border: 1px solid;
+    border-color: var(--bevel-light) var(--bevel-dark) var(--panel) var(--bevel-light);
+}
+
+/* the server list: a sunken table with raised column headers */
+.serverlist {
+    width: calc(100% - 24px);
+    margin: 0 12px;
+    border-collapse: collapse;
+    background: var(--ground);
+    border: 1px solid;
+    border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+    font-variant-numeric: tabular-nums;
+}
+
+.serverlist th {
+    padding: 4px 8px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text);
+    background: var(--panel);
+    border: 1px solid;
+    border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
+    white-space: nowrap;
+}
+
+.serverlist td {
+    padding: 6px 8px;
+    vertical-align: baseline;
+    border-bottom: 1px solid var(--bevel-dark);
+}
+
+.serverlist tbody tr:nth-child(odd) { background: var(--row); }
+.serverlist tbody tr:nth-child(even) { background: var(--row-alt); }
+/* VGUI selected-row treatment on hover */
+.serverlist tbody tr:hover { background: var(--selected); }
+.serverlist tbody tr:hover .server { color: var(--highlight); }
+
+.num, .serverlist th.num { text-align: right; white-space: nowrap; }
+
+.server { font-weight: 700; }
+.map, .join { font-family: var(--data); font-size: 14px; }
+.join { color: var(--highlight); white-space: nowrap; user-select: all; }
+.bots { color: var(--muted); }
+
+/* square lamp, drawn - not a glyph */
+.lamp { width: 26px; }
+.lamp i {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    background: var(--lamp-off);
+    border: 1px solid var(--bevel-dark);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.25);
+}
+.online .lamp i { background: var(--lamp-on); }
+.checking .lamp i, .unknown .lamp i { background: var(--lamp-wait); }
+.unknown .server, .unknown .map, .unknown .num, .unknown .join { color: var(--muted); font-weight: 400; }
+
+.offline .server, .offline .map, .offline .num, .offline .join { color: var(--muted); font-weight: 400; }
+
+.footbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin: 10px 12px 12px;
+}
+.hint { margin: 0; color: var(--muted); font-size: 13px; }
+
+/* VGUI button: raised bevel, pressed = sunken */
+button {
+    font: inherit;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--panel);
+    padding: 4px 18px;
+    border: 1px solid;
+    border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
+    border-radius: 0;
+    cursor: pointer;
+}
+button:hover { color: var(--highlight); }
+button:active { border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark); padding: 5px 17px 3px 19px; }
+button:disabled { color: var(--muted); cursor: progress; }
+
+/* the clan-site footer: a wall of 88x31 buttons */
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    max-width: 920px;
+    margin: 18px auto 0;
+}
+.buttons img { display: block; width: 88px; height: 31px; image-rendering: pixelated; }
+
+/* phones: each server becomes a two-line row, still one list */
+@media (max-width: 640px) {
+    body { padding: 12px 8px 24px; font-size: 16px; }
+    .statusbar, .footbar, .tabs { margin-left: 8px; margin-right: 8px; }
+    button { min-height: 44px; padding-left: 24px; padding-right: 24px; }
+    .serverlist { width: calc(100% - 16px); margin: 0 8px; }
+    .serverlist thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .serverlist tbody tr {
+        display: grid;
+        grid-template-columns: 22px 1fr auto;
+        grid-template-areas: "lamp server players" ". map map" ". join join";
+        gap: 1px 6px;
+        padding: 8px 8px 9px;
+        border-bottom: 1px solid var(--bevel-dark);
+    }
+    .serverlist td { padding: 0; border: 0; }
+    .lamp { grid-area: lamp; width: auto; }
+    .server { grid-area: server; }
+    .num { grid-area: players; }
+    .map { grid-area: map; color: var(--muted); }
+    .join { grid-area: join; }
+    .map::before { content: "map "; color: var(--muted); }
+    .map:empty { display: none; }
+}

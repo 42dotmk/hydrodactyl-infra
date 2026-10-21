@@ -61,6 +61,27 @@ test("static assets are served with their content types", async () => {
     assert.match((await fetch(`${base}/render.js`)).headers.get("content-type"), /^text\/javascript/);
 });
 
+test("88x31 badges are served as images, nothing else under /badges/", async () => {
+    const types = { "counter-strike.gif": "image/gif", "linux-now.jpg": "image/jpeg", "any-html-browser.png": "image/png" };
+    for (const [file, type] of Object.entries(types)) {
+        const res = await fetch(`${base}/badges/${file}`);
+        assert.equal(res.status, 200, file);
+        assert.equal(res.headers.get("content-type"), type, file);
+        assert.ok((await res.arrayBuffer()).byteLength > 0, file);
+    }
+    for (const path of ["/badges/", "/badges/../package.json", "/badges/nope.gif"]) assert.equal(await rawGet(path), 404, path);
+});
+
+test("self-hosted fonts are served as woff2, nothing else under /fonts/", async () => {
+    for (const file of ["dejavu-sans.woff2", "dejavu-sans-bold.woff2"]) {
+        const res = await fetch(`${base}/fonts/${file}`);
+        assert.equal(res.status, 200, file);
+        assert.equal(res.headers.get("content-type"), "font/woff2", file);
+        assert.equal(Buffer.from(await res.arrayBuffer()).subarray(0, 4).toString("latin1"), "wOF2", file);
+    }
+    for (const path of ["/fonts/", "/fonts/../servers.json", "/fonts/LICENSE"]) assert.equal(await rawGet(path), 404, path);
+});
+
 test("unknown and traversal paths return 404", async () => {
     for (const path of ["/servers.json", "/../package.json", "/%2e%2e/package.json", "/src/main.js", "/api/other", "/public/index.html"]) {
         assert.equal(await rawGet(path), 404, path);
