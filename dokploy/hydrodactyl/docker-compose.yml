@@ -28,6 +28,29 @@ services:
   hydrodactyl-panel:
     image: ${HYDRODACTYL_IMAGE}
     restart: unless-stopped
+    # memory_limit is -1 below (PHP2Shell mitigation), so cap the container instead.
+    mem_limit: 1536m
+    # --- PHP2Shell (CVE-2026-109618 / CVE-2026-109619) interim hardening, 2026-10-21 ---------------
+    # The image ships PHP 8.4.25; fixed in 8.4.27. Remove the configs and the hydrodactyl-lan-only
+    # labels below once HYDRODACTYL_IMAGE is built on PHP >= 8.4.27 (check: docker exec ... php -v).
+    configs:
+      - source: php-fpm-pool
+        target: /usr/local/etc/php-fpm.conf
+      - source: php-hardening
+        target: /usr/local/etc/php/conf.d/zz-hardening.ini
+    labels:
+      # LAN-only until patched: a higher-priority router than Dokploy's for the same host, with an
+      # IP allowlist. Requests reach Traefik via Caddy on base42, which sets X-Forwarded-For to the
+      # real client (it does not trust client-sent values); office clients and wings-01 arrive via the
+      # MikroTik hairpin NAT as 192.168.100.1.
+      - traefik.http.routers.hydrodactyl-lan-only.rule=Host(`hydrodactyl.apps.42.mk`)
+      - traefik.http.routers.hydrodactyl-lan-only.entrypoints=web
+      - traefik.http.routers.hydrodactyl-lan-only.priority=10000
+      - traefik.http.routers.hydrodactyl-lan-only.middlewares=hydrodactyl-lan-only
+      - traefik.http.routers.hydrodactyl-lan-only.service=hydrodactyl-lan-only
+      - traefik.http.services.hydrodactyl-lan-only.loadbalancer.server.port=80
+      - traefik.http.middlewares.hydrodactyl-lan-only.ipallowlist.sourcerange=192.168.100.0/23
+      - traefik.http.middlewares.hydrodactyl-lan-only.ipallowlist.ipstrategy.depth=1
     depends_on:
       hydrodactyl-db:
         condition: service_healthy
@@ -77,6 +100,31 @@ services:
     depends_on:
       hydrodactyl-panel:
         condition: service_healthy
+
+configs:
+  # Hydrodactyl's own pool definition (/usr/local/etc/php-fpm.conf in the image, which does not
+  # include php-fpm.d/) plus php_admin_* values that applications cannot override with ini_set().
+  php-fpm-pool:
+    content: |
+      [www]
+      user = nginx
+      group = nginx
+      listen = 127.0.0.1:9000
+      listen.owner = nginx
+      listen.group = nginx
+      listen.mode = 0750
+      pm = ondemand
+      pm.max_children = 9
+      pm.process_idle_timeout = 10s
+      pm.max_requests = 200
+      clear_env = no
+      php_admin_flag[session.upload_progress.enabled] = off
+      php_admin_value[memory_limit] = -1
+      php_admin_value[post_max_size] = 8M
+  php-hardening:
+    content: |
+      expose_php = Off
+      session.upload_progress.enabled = 0
 
 volumes:
   database:
