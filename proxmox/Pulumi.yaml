@@ -1,0 +1,6 @@
+name: proxmox-base42
+description: VMs on the base42 Proxmox host (pve), managed with the bpg Proxmox provider
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

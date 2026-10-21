@@ -1,0 +1,85 @@
+# Hydrodactyl panel (https://github.com/BlueprintFramework/hydrodactyl).
+# Managed by Pulumi (/opt/pulumi/dokploy) - edit here, not in the Dokploy UI.
+# ${VARS} come from the .env Dokploy writes from the Pulumi-managed environment.
+#
+# Service names are prefixed because the panel also joins dokploy-network,
+# where generic names like "database" or "cache" could resolve to other stacks.
+services:
+  hydrodactyl-db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: panel
+      MARIADB_USER: hydrodactyl
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - database:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  hydrodactyl-redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+
+  hydrodactyl-panel:
+    image: ${HYDRODACTYL_IMAGE}
+    restart: unless-stopped
+    depends_on:
+      hydrodactyl-db:
+        condition: service_healthy
+      hydrodactyl-redis:
+        condition: service_started
+    # Healthy only once the entrypoint has finished migrations and nginx is serving.
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 180s
+    volumes:
+      # APP_KEY and HASHIDS_SALT are generated on first start into /app/var/.env.
+      # Losing this volume makes encrypted panel data unreadable - back it up.
+      - var:/app/var
+      - logs:/app/storage/logs
+      - storage:/app/storage/app/public
+    environment:
+      APP_ENV: production
+      APP_ENVIRONMENT_ONLY: "false"
+      APP_URL: ${APP_URL}
+      APP_TIMEZONE: ${APP_TIMEZONE}
+      APP_SERVICE_AUTHOR: ${APP_SERVICE_AUTHOR}
+      # TLS ends at Caddy on base42; Traefik forwards plain HTTP.
+      TRUSTED_PROXIES: "*"
+      DB_CONNECTION: mariadb
+      DB_HOST: hydrodactyl-db
+      DB_PORT: "3306"
+      DB_DATABASE: panel
+      DB_USERNAME: hydrodactyl
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: hydrodactyl-redis
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      QUEUE_DRIVER: redis
+      QUEUE_CONNECTION: redis
+      HASHIDS_LENGTH: "8"
+
+  # One-shot gate: `docker compose up -d` (and so Dokploy's deploy status) only finishes once the
+  # panel is healthy, i.e. first-boot migrations are done. Recreating the panel mid-migration
+  # leaves MariaDB half-migrated, because DDL is not transactional.
+  hydrodactyl-ready:
+    image: redis:7.4-alpine
+    command: ["true"]
+    restart: "no"
+    depends_on:
+      hydrodactyl-panel:
+        condition: service_healthy
+
+volumes:
+  database:
+  var:
+  logs:
+  storage:

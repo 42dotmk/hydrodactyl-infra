@@ -1,0 +1,17 @@
+#cloud-config
+# Rendered by Pulumi (proxmox/wings) into local:snippets. Docker and Wings are installed
+# afterwards over SSH by Pulumi, so this only bootstraps access and the guest agent.
+users:
+  - name: ubuntu
+    groups: [sudo]
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: true
+    ssh_authorized_keys:
+      - __SSH_PUBLIC_KEY__
+ssh_pwauth: false
+package_update: true
+packages:
+  - qemu-guest-agent
+runcmd:
+  - systemctl enable --now qemu-guest-agent

@@ -1,0 +1,123 @@
+# Pulumi on base42 (Proxmox host). `mise tasks` lists everything.
+#   dokploy/  - workloads on the base42 Dokploy (VM 420, platform.42.mk) via pulumi-dokploy
+#   proxmox/  - VMs on this host via the bpg Proxmox provider
+# State (.state/) and the secrets passphrase (.secrets/) live next to this file - back both up.
+
+[tools]
+node = "24.22.0"
+pulumi = "3.270.0"
+
+[env]
+PULUMI_BACKEND_URL = "file://{{config_root}}/.state"
+PULUMI_CONFIG_PASSPHRASE_FILE = "{{config_root}}/.secrets/pulumi-passphrase"
+PULUMI_SKIP_UPDATE_CHECK = "true"
+
+[tasks.init]
+description = "One-time: create the state backend, passphrase and the prod stacks"
+run = """
+mkdir -p .state .secrets
+chmod 700 .secrets
+[ -s .secrets/pulumi-passphrase ] || (umask 077 && openssl rand -base64 48 > .secrets/pulumi-passphrase)
+for project in dokploy proxmox; do (cd $project && (pulumi stack select prod 2>/dev/null || pulumi stack init prod)); done
+"""
+
+[tasks.preview]
+description = "Preview both projects"
+depends = ["dokploy:preview", "proxmox:preview"]
+
+[tasks.backup-state]
+description = "Export both prod stacks to .state-backups/"
+run = """
+mkdir -p .state-backups
+for project in dokploy proxmox; do (cd $project && pulumi stack export --stack prod --file ../.state-backups/$project-prod-$(date +%Y%m%d-%H%M%S).json); done
+"""
+
+# --- dokploy ---------------------------------------------------------------
+
+[tasks."dokploy:install"]
+description = "Install npm dependencies and provider plugins"
+dir = "{{config_root}}/dokploy"
+run = "pulumi install"
+
+[tasks."dokploy:set-api-key"]
+description = "Store the Dokploy API key as an encrypted secret (prompts, or reads stdin)"
+dir = "{{config_root}}/dokploy"
+run = "pulumi config set --secret --stack prod dokploy:apiKey"
+
+[tasks."dokploy:preview"]
+description = "Show what dokploy:up would change"
+dir = "{{config_root}}/dokploy"
+depends = ["dokploy:install"]
+run = "pulumi preview --stack prod --diff"
+
+[tasks."dokploy:up"]
+description = "Apply Dokploy changes (asks for confirmation; pass --yes to skip)"
+dir = "{{config_root}}/dokploy"
+depends = ["dokploy:install"]
+run = "pulumi up --stack prod"
+
+[tasks."dokploy:refresh"]
+description = "Sync state with what is actually in Dokploy"
+dir = "{{config_root}}/dokploy"
+run = "pulumi refresh --stack prod"
+
+[tasks."dokploy:outputs"]
+description = "Show Dokploy stack outputs"
+dir = "{{config_root}}/dokploy"
+run = "pulumi stack output --stack prod"
+
+# --- proxmox ---------------------------------------------------------------
+
+[tasks."proxmox:install"]
+description = "Install npm dependencies and provider plugins"
+dir = "{{config_root}}/proxmox"
+run = "pulumi install"
+
+[tasks."proxmox:bootstrap-access"]
+description = "One-time: create pulumi@pve with the PulumiProvisioner role and store its API token"
+run = """
+PRIVS="Datastore.AllocateSpace,Datastore.AllocateTemplate,Datastore.Audit,Pool.Audit,Sys.Audit,Sys.Console,Sys.Modify,SDN.Audit,SDN.Use,VM.Allocate,VM.Audit,VM.Clone,VM.Config.CDROM,VM.Config.Cloudinit,VM.Config.CPU,VM.Config.Disk,VM.Config.HWType,VM.Config.Memory,VM.Config.Network,VM.Config.Options,VM.Console,VM.Migrate,VM.PowerMgmt,VM.GuestAgent.Audit,VM.Snapshot,VM.Backup"
+pveum role add PulumiProvisioner -privs "$PRIVS" 2>/dev/null || pveum role modify PulumiProvisioner -privs "$PRIVS"
+pveum user add pulumi@pve --comment "Pulumi in /opt/pulumi (proxmox project)" 2>/dev/null || true
+pveum acl modify / -user pulumi@pve -role PulumiProvisioner
+pveum user token add pulumi@pve iac --privsep 0 --comment "Pulumi proxmox project" --output-format json \
+  | python3 -c 'import json,sys;d=json.load(sys.stdin);sys.stdout.write(d["full-tokenid"]+"="+d["value"])' \
+  | (cd proxmox && pulumi config set --secret --stack prod proxmoxve:apiToken)
+echo "pulumi@pve!iac created; token stored encrypted in proxmox/Pulumi.prod.yaml"
+"""
+
+[tasks."proxmox:set-api-token"]
+description = "Store the Proxmox API token (user@realm!id=secret) as an encrypted secret (prompts, or reads stdin)"
+dir = "{{config_root}}/proxmox"
+run = "pulumi config set --secret --stack prod proxmoxve:apiToken"
+
+[tasks."proxmox:preview"]
+description = "Show what proxmox:up would change"
+dir = "{{config_root}}/proxmox"
+depends = ["proxmox:install"]
+run = "pulumi preview --stack prod --diff"
+
+[tasks."proxmox:up"]
+description = "Apply Proxmox changes (asks for confirmation; pass --yes to skip)"
+dir = "{{config_root}}/proxmox"
+depends = ["proxmox:install"]
+run = "pulumi up --stack prod"
+
+[tasks."proxmox:refresh"]
+description = "Sync state with what is actually in Proxmox"
+dir = "{{config_root}}/proxmox"
+run = "pulumi refresh --stack prod"
+
+[tasks."proxmox:outputs"]
+description = "Show Proxmox stack outputs"
+dir = "{{config_root}}/proxmox"
+run = "pulumi stack output --stack prod"
+
+[tasks."proxmox:ssh-wings"]
+description = "SSH into the Wings VM as ubuntu (key comes from Pulumi state)"
+dir = "{{config_root}}/proxmox"
+run = """
+umask 077
+pulumi stack output --stack prod --show-secrets wingsSshPrivateKey > /root/.ssh/wings-01_ed25519
+ssh -i /root/.ssh/wings-01_ed25519 -o StrictHostKeyChecking=accept-new ubuntu@$(pulumi stack output --stack prod wingsAddress)
+"""

@@ -1,0 +1,15 @@
+config:
+  proxmoxve:endpoint: https://127.0.0.1:8006/
+  proxmoxve:insecure: "true"
+  wings:vmId: "421"
+  wings:name: wings-01
+  wings:cores: "8"
+  wings:memoryMb: "32768"
+  wings:diskGb: "200"
+  wings:address: 10.10.0.250/24
+  wings:version: v1.13.4
+  proxmoxve:apiToken:
+    secure: v1:n5XFAKVI6AsrchWE:EOnrOP6GR1IZfuNyGgoExuks7+Oe0zd6ITLa/wh2B9j1mxOLpf/yqjCXQCaN9fOhzQPYlolJvRgNhZ1D6EQT4KmySQ==
+  wings:lanMacAddress: BC:24:11:42:14:21
+  wings:publicHost: wings-01.apps.42.mk
+encryptionsalt: v1:LaOhWGoJBIQ=:v1:2Hs0ThwAuy37s2Nx:NMydHerS/fqwQirteHoNU9BlSidhsg==

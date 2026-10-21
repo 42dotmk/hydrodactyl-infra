@@ -1,0 +1,6 @@
+name: dokploy-42-mk
+description: Workloads on the base42 Dokploy (platform.42.mk), managed with pulumi-dokploy
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

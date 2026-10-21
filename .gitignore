@@ -1,0 +1,21 @@
+# --- Never commit: secrets and state ----------------------------------------
+# Passphrase that decrypts the `secure:` values in Pulumi.*.yaml - keep it in a password manager / Infisical.
+.secrets/
+# Pulumi state (local file backend, see PULUMI_BACKEND_URL in mise.toml) and stack exports.
+.state/
+.state-backups/
+.pulumi/
+
+# Stack config files (Pulumi.<stack>.yaml) ARE committed on purpose: secrets in them are
+# encrypted with the passphrase above, the rest is plain configuration.
+
+# --- Node.js / TypeScript ----------------------------------------------------
+node_modules/
+bin/
+*.tsbuildinfo
+
+# --- Misc ----------------------------------------------------------------------
+*.log
+*.out
+.DS_Store
+Thumbs.db
