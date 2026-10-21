@@ -1,0 +1,11 @@
+# Pinned build inputs: <name> <sha256> <url>. Bump a version by changing URL + hash together.
+regamedll       457f5c96a4d10280fcad47f106cbd5be86363a47df1ccab91c514e9d1bc6fd18 https://github.com/rehlds/ReGameDLL_CS/releases/download/5.30.0.814/regamedll-bin-5.30.0.814.zip
+metamod         ede7f59c4e0220afe8c02aa348a130cce527f87d36ffdb674e37a501ce57be94 https://github.com/rehlds/Metamod-R/releases/download/1.3.0.149/metamod-bin-1.3.0.149.zip
+reapi           f33a7435540bea8706db3fa948e51a85b511f5b18c383b97402a204dc5419195 https://github.com/rehlds/ReAPI/releases/download/5.29.0.358/reapi-bin-5.29.0.358.zip
+reunion         0f238276719274216bd169c578eac2db4e041946b8b9f0e407e41ef9d85efdf5 https://github.com/rehlds/ReUnion/releases/download/0.2.0.25/reunion-0.2.0.25.zip
+amxx-base       9f5041325cc656dcc292cafb9d2c9cb4deeedb57192d8a7ed43947530e04e5b7 https://github.com/alliedmodders/amxmodx/releases/download/1.10.0.5486/amxmodx-1.10.0-git5486-base-linux.tar.gz
+amxx-cstrike    686d875010792d84ac765d2f78af227ab7000c9b567995ea56b836e0a41fc7a7 https://github.com/alliedmodders/amxmodx/releases/download/1.10.0.5486/amxmodx-1.10.0-git5486-cstrike-linux.tar.gz
+yapb            8c095ac89b9b2ccc70a66a71d608e1a570b5268c57c6083ced8c06161533a4b1 https://github.com/yapb/yapb/releases/download/4.4.957/yapb-4.4.957-linux.tar.xz
+# Plugin sources, pinned to commits (compiled on the server from .sma, never shipped as binaries)
+src-gungame     fe03425fd1f165070ec2693edb395352aded280b80b6dd56fd24d7f562d1af09 https://codeload.github.com/fysiks1/amxx-gungame_cstrike/tar.gz/8024d1ef35cddf357ce18b277bde2c6422cab56d
+src-deathrun    0bd3135bca8bb3b1a08f1d74435ffc8094d348766efc59ae02463753f6ba1020 https://codeload.github.com/Mistrick/DeathrunMod/tar.gz/bc1e96e12ec6545bab7911b60e57ed1a3e48dede

@@ -121,3 +121,9 @@ umask 077
 pulumi stack output --stack prod --show-secrets wingsSshPrivateKey > /root/.ssh/wings-01_ed25519
 ssh -i /root/.ssh/wings-01_ed25519 -o StrictHostKeyChecking=accept-new ubuntu@$(pulumi stack output --stack prod wingsAddress)
 """
+
+# --- games -----------------------------------------------------------------
+
+[tasks."cs16:deploy"]
+description = "Build + install the CS 1.6 stack for a mode on its server: mise run cs16:deploy <classic|gungame|deathrun>"
+run = "bash games/cs16/deploy.sh"
