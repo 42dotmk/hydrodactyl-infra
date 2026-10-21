@@ -45,7 +45,9 @@ export class LanStatus extends pulumi.ComponentResource {
                     url: args.repoUrl,
                     branch: args.branch,
                     buildPath: `/${args.appDir}`,
-                    build: { type: "dockerfile", dockerfile: "Dockerfile", dockerContextPath: "." },
+                    // No dockerContextPath: Dokploy then uses the Dockerfile's directory (the build path).
+                    // "." resolved to an empty directory, not to the build path.
+                    build: { type: "dockerfile", dockerfile: "Dockerfile" },
                 },
             },
             environment: `APP_REVISION=${revision}\n`,
