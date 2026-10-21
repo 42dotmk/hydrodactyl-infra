@@ -78,7 +78,7 @@ description = "One-time: create pulumi@pve with the PulumiProvisioner role and s
 run = """
 PRIVS="Datastore.AllocateSpace,Datastore.AllocateTemplate,Datastore.Audit,Pool.Audit,Sys.Audit,Sys.Console,Sys.Modify,SDN.Audit,SDN.Use,VM.Allocate,VM.Audit,VM.Clone,VM.Config.CDROM,VM.Config.Cloudinit,VM.Config.CPU,VM.Config.Disk,VM.Config.HWType,VM.Config.Memory,VM.Config.Network,VM.Config.Options,VM.Console,VM.Migrate,VM.PowerMgmt,VM.GuestAgent.Audit,VM.Snapshot,VM.Backup"
 pveum role add PulumiProvisioner -privs "$PRIVS" 2>/dev/null || pveum role modify PulumiProvisioner -privs "$PRIVS"
-pveum user add pulumi@pve --comment "Pulumi in /opt/pulumi (proxmox project)" 2>/dev/null || true
+pveum user add pulumi@pve --comment "Pulumi in /root/hydrodactyl-infra (proxmox project)" 2>/dev/null || true
 pveum acl modify / -user pulumi@pve -role PulumiProvisioner
 pveum user token add pulumi@pve iac --privsep 0 --comment "Pulumi proxmox project" --output-format json \
   | python3 -c 'import json,sys;d=json.load(sys.stdin);sys.stdout.write(d["full-tokenid"]+"="+d["value"])' \

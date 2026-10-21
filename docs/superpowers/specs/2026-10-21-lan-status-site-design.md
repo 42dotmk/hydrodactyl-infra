@@ -1,6 +1,6 @@
 # LAN status site (lan.apps.42.mk) – design
 
-Date: 2026-10-21 · Repo: `/opt/pulumi` on base42 (`github.com:42dotmk/hydrodactyl-infra`)
+Date: 2026-10-21 · Repo: `/root/hydrodactyl-infra` on base42 (`github.com:42dotmk/hydrodactyl-infra`)
 
 ## Intent
 
@@ -54,7 +54,7 @@ All on the Wings node, LAN address 192.168.101.39 (static DHCP lease).
 
 ## Constraints and decided "how"
 
-- **Code location:** everything lives in the `/opt/pulumi` repo: the app under `apps/lan-status/`,
+- **Code location:** everything lives in the `/root/hydrodactyl-infra` repo: the app under `apps/lan-status/`,
   its Pulumi component under `dokploy/` next to `hydrodactyl/`. *(User: "add everything to the pulumi
   directory".)*
 - **Query library:** `gamedig` (node-gamedig, currently 5.3.x, ESM). *(User's choice.)*

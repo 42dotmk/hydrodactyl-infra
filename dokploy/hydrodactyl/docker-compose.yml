@@ -1,5 +1,5 @@
 # Hydrodactyl panel (https://github.com/BlueprintFramework/hydrodactyl).
-# Managed by Pulumi (/opt/pulumi/dokploy) - edit here, not in the Dokploy UI.
+# Managed by Pulumi (/root/hydrodactyl-infra/dokploy) - edit here, not in the Dokploy UI.
 # ${VARS} come from the .env Dokploy writes from the Pulumi-managed environment.
 #
 # Service names are prefixed because the panel also joins dokploy-network,

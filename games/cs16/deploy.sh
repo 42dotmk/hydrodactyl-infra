@@ -1,6 +1,6 @@
 #!/bin/bash
 # Ships games/cs16 to the Wings node and runs build.sh there as root.
-# usage (from /opt/pulumi): mise run cs16:deploy <classic|gungame|deathrun>
+# usage (from /root/hydrodactyl-infra): mise run cs16:deploy <classic|gungame|deathrun>
 set -euo pipefail
 MODE=${1:?usage: mise run cs16:deploy <mode>}
 HERE=$(cd "$(dirname "$0")" && pwd)

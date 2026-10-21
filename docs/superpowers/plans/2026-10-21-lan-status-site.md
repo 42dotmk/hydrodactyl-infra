@@ -12,7 +12,7 @@
 
 ## Working conventions
 
-- Repo root is `/opt/pulumi` on base42 (root shell, mise on PATH). All paths below are relative to it.
+- Repo root is `/root/hydrodactyl-infra` on base42 (root shell, mise on PATH). All paths below are relative to it.
 - Run Node commands through mise so the pinned Node 24 is used: `mise exec -- <cmd>` from the repo root, or `mise exec -C apps/lan-status -- npm test`.
 - Commit with the repo-local identity already configured (`base42-infra`). Do not push; the user pushes (Task 5 asks them).
 
@@ -199,7 +199,7 @@ test("servers.json lists the six servers with valid fields", async () => {
 
 - [ ] **Step 3: Type-check**: `mise exec -C dokploy -- npx tsc --noEmit` → no errors. `mise run lan-status:test` → PASS.
 
-- [ ] **Step 4: Commit** `git add dokploy apps mise.toml && git commit -m "lan-status: Dokploy app via Pulumi"`, then **ask the user to push** (`git push` from `/opt/pulumi`) – Dokploy clones from GitHub `main`. Wait for confirmation; check with `git status -sb` that `main` is not ahead of `origin/main`.
+- [ ] **Step 4: Commit** `git add dokploy apps mise.toml && git commit -m "lan-status: Dokploy app via Pulumi"`, then **ask the user to push** (`git push` from `/root/hydrodactyl-infra`) – Dokploy clones from GitHub `main`. Wait for confirmation; check with `git status -sb` that `main` is not ahead of `origin/main`.
 
 - [ ] **Step 5: Preview**: `mise run dokploy:preview` → creates Project, Application, Domain under `base42:dokploy:LanStatus`; **no** changes to the Hydrodactyl resources. Show the preview to the user before applying.
 

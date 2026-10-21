@@ -28,7 +28,7 @@ export class Hydrodactyl extends pulumi.ComponentResource {
 
         const project = new dokploy.Project(name, {
             name: "hydrodactyl",
-            description: "Hydrodactyl game server panel - managed by Pulumi (/opt/pulumi)",
+            description: "Hydrodactyl game server panel - managed by Pulumi (/root/hydrodactyl-infra)",
         }, parent);
 
         const compose = new dokploy.Compose(name, {

@@ -60,7 +60,7 @@ export class WingsNode extends pulumi.ComponentResource {
             nodeName: args.nodeName,
             vmId: args.vmId,
             name,
-            description: "Pterodactyl Wings node for Hydrodactyl (hydrodactyl.apps.42.mk). Managed by Pulumi in /opt/pulumi/proxmox.",
+            description: "Pterodactyl Wings node for Hydrodactyl (hydrodactyl.apps.42.mk). Managed by Pulumi in /root/hydrodactyl-infra/proxmox.",
             tags: ["pulumi", "wings"],
             onBoot: true,
             started: true,
@@ -135,7 +135,7 @@ export class WingsNode extends pulumi.ComponentResource {
         new command.local.Command(`${name}-caddy-site`, {
             create: [
                 "set -e",
-                `printf '# Managed by Pulumi (/opt/pulumi/proxmox) - do not edit.\\n%s {\\n    reverse_proxy %s:8080\\n}\\n' "$PUBLIC_HOST" "$UPSTREAM" > ${siteFile}.new`,
+                `printf '# Managed by Pulumi (/root/hydrodactyl-infra/proxmox) - do not edit.\\n%s {\\n    reverse_proxy %s:8080\\n}\\n' "$PUBLIC_HOST" "$UPSTREAM" > ${siteFile}.new`,
                 `mv ${siteFile}.new ${siteFile}`,
                 `caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null || { rm -f ${siteFile}; exit 1; }`,
                 "systemctl reload caddy",
