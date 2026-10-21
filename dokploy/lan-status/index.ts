@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as pulumi from "@pulumi/pulumi";
+import * as command from "@pulumi/command";
 import * as dokploy from "@dimeskigj/pulumi-dokploy";
 import { appRevision } from "./revision";
 
@@ -23,7 +24,7 @@ export class LanStatus extends pulumi.ComponentResource {
         super("base42:dokploy:LanStatus", name, {}, opts);
         const parent = { parent: this };
 
-        // Redeploys follow the app's tree on origin/<branch> (what Dokploy builds), not local files.
+        // Deploys follow the app's tree on origin/<branch> (what Dokploy builds), not local files.
         const { revision, upToDate } = appRevision(repoRoot, args.branch, args.appDir);
         if (!upToDate) {
             pulumi.log.warn(`${args.appDir} has changes that are not on origin/${args.branch}; Dokploy builds from GitHub, so push first and re-run`, this);
@@ -50,8 +51,21 @@ export class LanStatus extends pulumi.ComponentResource {
                     build: { type: "dockerfile", dockerfile: "Dockerfile" },
                 },
             },
-            environment: `APP_REVISION=${revision}\n`,
         }, parent);
+
+        // Updating the Application only makes Dokploy *redeploy*, which rebuilds the old checkout
+        // without cloning. application.deploy clones origin/<branch> first, so call it whenever the
+        // app's tree changes. On a fresh create this queues a second (identical) build; harmless.
+        const dokployConfig = new pulumi.Config("dokploy");
+        new command.local.Command(`${name}-deploy`, {
+            create: `curl -fsS -o /dev/null -X POST "$DOKPLOY_ENDPOINT/api/application.deploy" -H "x-api-key: $DOKPLOY_API_KEY" -H "content-type: application/json" -d "{\\"applicationId\\":\\"$APPLICATION_ID\\"}"`,
+            environment: {
+                DOKPLOY_ENDPOINT: dokployConfig.require("endpoint"),
+                DOKPLOY_API_KEY: dokployConfig.requireSecret("apiKey"),
+                APPLICATION_ID: app.applicationId,
+            },
+            triggers: [revision],
+        }, { parent: this, dependsOn: [app] });
 
         new dokploy.Domain(name, {
             applicationId: app.applicationId,
