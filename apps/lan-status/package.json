@@ -1,0 +1,17 @@
+{
+    "name": "lan-status",
+    "private": true,
+    "description": "Public status board for the 42.mk LAN game servers (lan.apps.42.mk)",
+    "type": "module",
+    "engines": {
+        "node": ">=24"
+    },
+    "scripts": {
+        "start": "node src/main.js",
+        "test": "node --test",
+        "probe": "node src/probe.js"
+    },
+    "dependencies": {
+        "gamedig": "5.3.3"
+    }
+}

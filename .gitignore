@@ -19,3 +19,6 @@ bin/
 *.out
 .DS_Store
 Thumbs.db
+
+# superpowers plan workspaces (ledgers, briefs)
+.superpowers/
