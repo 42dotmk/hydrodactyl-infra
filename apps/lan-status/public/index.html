@@ -39,18 +39,20 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
         </div>
 
         <div id="panel-lan" role="tabpanel" aria-labelledby="tab-lan">
-            <table class="serverlist" role="table" aria-describedby="summary">
-                <thead>
-                    <tr role="row">
-                        <th scope="col" role="columnheader"><span class="sr">Status</span></th>
-                        <th scope="col" role="columnheader">Server</th>
-                        <th scope="col" role="columnheader">Map</th>
-                        <th scope="col" role="columnheader" class="num">Players</th>
-                        <th scope="col" role="columnheader">Join</th>
-                    </tr>
-                </thead>
-                <tbody id="servers"></tbody>
-            </table>
+            <div class="listbox">
+                <table class="serverlist" role="table" aria-describedby="summary">
+                    <thead>
+                        <tr role="row">
+                            <th scope="col" role="columnheader"><span class="sr">Status</span></th>
+                            <th scope="col" role="columnheader">Server</th>
+                            <th scope="col" role="columnheader">Map</th>
+                            <th scope="col" role="columnheader" class="num">Players</th>
+                            <th scope="col" role="columnheader">Join</th>
+                        </tr>
+                    </thead>
+                    <tbody id="servers"></tbody>
+                </table>
+            </div>
 
             <div class="footbar">
                 <p class="hint">Join from inside the LAN at the address shown. Refreshes every 15&nbsp;seconds.</p>
