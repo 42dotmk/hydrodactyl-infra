@@ -154,7 +154,9 @@ h1 {
 /* the server list: a table with raised column headers that stay put if the list ever scrolls */
 .serverlist {
     width: 100%;
-    border-collapse: collapse;
+    /* separate, not collapse: collapsed borders belong to the table, so a sticky header loses its bevels */
+    border-collapse: separate;
+    border-spacing: 0;
     font-variant-numeric: tabular-nums;
 }
 .serverlist thead th { position: sticky; top: 0; z-index: 1; }
