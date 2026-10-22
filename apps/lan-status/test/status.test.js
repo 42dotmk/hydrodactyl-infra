@@ -40,9 +40,9 @@ test("initialStatus is offline and unchecked", () => {
     assert.deepEqual(initialStatus(cs), { ...toStatus(cs, null, null), checkedAt: null });
 });
 
-test("servers.json lists the six servers with valid fields", async () => {
+test("servers.json lists the seven servers with valid fields", async () => {
     const servers = JSON.parse(await readFile(new URL("../servers.json", import.meta.url)));
-    assert.equal(servers.length, 6);
+    assert.equal(servers.length, 7);
     for (const s of servers) {
         assert.match(s.id, /^[a-z0-9-]+$/);
         assert.ok(Number.isInteger(s.port));
