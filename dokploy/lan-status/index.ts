@@ -12,6 +12,8 @@ export interface LanStatusArgs {
     branch: string;
     /** Repo-relative app directory containing the Dockerfile, e.g. "apps/lan-status". */
     appDir: string;
+    /** squaremap's web server on the Minecraft server, proxied at /map/ for the Map tab (games/minecraft). */
+    mapUpstream: string;
 }
 
 const repoRoot = path.join(__dirname, "..", "..");
@@ -51,6 +53,7 @@ export class LanStatus extends pulumi.ComponentResource {
                     build: { type: "dockerfile", dockerfile: "Dockerfile" },
                 },
             },
+            environment: `MAP_UPSTREAM=${args.mapUpstream}\n`,
         }, parent);
 
         // Updating the Application only makes Dokploy *redeploy*, which rebuilds the old checkout

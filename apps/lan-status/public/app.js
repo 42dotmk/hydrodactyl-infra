@@ -89,6 +89,45 @@ async function loop() {
     setTimeout(loop, snapshot.updatedAt ? REFRESH_MS : FIRST_POLL_RETRY_MS);
 }
 
+// Tabs: LAN (the server list) and Map (squaremap, framed from /map/). The map is only requested the
+// first time its tab opens, so visitors who never look at it cost the Minecraft server nothing.
+const tabs = [...document.querySelectorAll('[role="tab"]')];
+
+function openMap() {
+    const frame = document.getElementById("mapframe");
+    if (frame.firstElementChild) return;
+    const iframe = document.createElement("iframe");
+    iframe.src = "/map/";
+    iframe.title = "Minecraft world map";
+    frame.append(iframe);
+}
+
+function selectTab(tab, { focus = false } = {}) {
+    for (const t of tabs) {
+        const selected = t === tab;
+        t.setAttribute("aria-selected", String(selected));
+        t.tabIndex = selected ? 0 : -1;
+        document.getElementById(t.getAttribute("aria-controls")).hidden = !selected;
+    }
+    if (tab.id === "tab-map") openMap();
+    history.replaceState(null, "", tab.id === "tab-map" ? "#map" : location.pathname);
+    if (focus) tab.focus();
+}
+
+for (const tab of tabs) {
+    tab.addEventListener("click", () => selectTab(tab));
+    tab.addEventListener("keydown", (event) => {
+        const i = tabs.indexOf(tab);
+        const next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[event.key];
+        if (next === undefined) return;
+        event.preventDefault();
+        selectTab(tabs[(next + tabs.length) % tabs.length], { focus: true });
+    });
+}
+const tabForHash = () => document.getElementById(location.hash === "#map" ? "tab-map" : "tab-lan");
+window.addEventListener("hashchange", () => selectTab(tabForHash()));
+if (location.hash === "#map") selectTab(tabForHash());
+
 document.getElementById("refresh").addEventListener("click", refresh);
 loop();
 setInterval(render, 1000);

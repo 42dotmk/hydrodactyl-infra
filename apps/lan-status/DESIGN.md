@@ -63,6 +63,12 @@ components:
     typography: "{typography.label}"
     rounded: "{rounded.none}"
     padding: "3px 14px 4px"
+  tab-inactive:
+    backgroundColor: "{colors.row-stripe}"
+    textColor: "{colors.console-text}"
+    typography: "{typography.label}"
+    rounded: "{rounded.none}"
+    padding: "3px 14px 3px"
   list-header:
     backgroundColor: "{colors.vgui-panel}"
     textColor: "{colors.console-text}"
@@ -145,7 +151,7 @@ A low-chroma olive family with one warm yellow accent and three lamp colours.
 
 ## Layout
 
-A single centred column with a 920px maximum width. The body is a flex column with min-height 100dvh, so the window is vertically centred when it fits and simply scrolls from the top when it doesn't (on phones). Inside the window, every strip is inset 12px from the frame (8px at <=640px). Spacing follows a 4/8/12/16/24 rhythm. The page reads from top to bottom: title bar (the name alone), sunken status bar, a single "LAN" tab, the server list, then a footer bar with the hint and Refresh. The row of 88x31 buttons closes the page outside the window, 18px below it, with no rule between them.
+A single centred column with a 920px maximum width. The body is a flex column with min-height 100dvh, so the window is vertically centred when it fits and simply scrolls from the top when it doesn't (on phones). Inside the window, every strip is inset 12px from the frame (8px at <=640px). Spacing follows a 4/8/12/16/24 rhythm. The page reads from top to bottom: title bar (the name alone), sunken status bar, the "LAN" and "Map" tabs, then the selected panel: the server list with a footer bar holding the hint and Refresh, or the Minecraft map (sunken, min(68vh, 620px) tall, 64vh on phones) with a footer bar holding its hint and a "Full screen" link-button. The row of 88x31 buttons closes the page outside the window, 18px below it, with no rule between them.
 
 **The Still One List Rule.** At <=640px the table stays one list. The header row is visually hidden. Each row becomes a grid with the lamp, server and players on the first line, and "map …" and the join address on the lines below (the map line is dropped when empty). Refresh grows to a 44px touch height.
 
@@ -170,8 +176,8 @@ Every corner is square (radius 0). The only shapes are rectangles: frames, strip
 - **Hover / Active / Disabled:** the label turns Steam yellow on hover. When pressed, the bevel inverts to sunken. While a fetch is in flight, the label is muted and the cursor shows progress.
 - **Focus:** a 1px dotted Steam-yellow outline with a 2px offset (this applies to every focusable element).
 
-### Tab
-A single raised tab that joins the list beneath it. Its bottom edge takes the panel colour and it is nudged down 1px, so it reads as attached. The label is in Steam yellow.
+### Tabs
+Two VGUI property-sheet tabs, LAN and Map, 2px apart. The selected tab is raised and joins the panel beneath it: its bottom edge takes the panel colour and it is nudged down 1px, so it reads as attached, and its label is in Steam yellow. The other tab sits 2px lower on the row-stripe colour with a Bevel Dark bottom edge, so it is not attached; its label is body text and turns yellow on hover. Arrow keys, Home and End move between them, and `#map` in the address selects the Map tab. The map loads only the first time its tab opens.
 
 ### Status bar
 A sunken strip. On the left is the bold summary ("N of M servers online · P players", "checking servers…" or "status unknown"). On the right is the muted timestamp ("updated 12s ago", or "last update 3 min ago · data is stale / status service unreachable, retrying"). It wraps to two lines on phones.

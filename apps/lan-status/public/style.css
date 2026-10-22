@@ -107,18 +107,46 @@ h1 {
 
 .updated { color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; }
 
-/* a single tab, as in the VGUI server browser: this list only ever shows the LAN */
-.tabs { margin: 0 12px; display: flex; }
+/* VGUI property-sheet tabs: the selected one is raised and joins the sunken panel beneath it,
+   the other sits back a step, unjoined, in body text until hovered */
+.tabs { margin: 0 12px; display: flex; gap: 2px; }
 .tab {
     position: relative;
     top: 1px;
+    z-index: 1;
+    min-height: 0;
     padding: 3px 14px 4px;
     font-size: 13px;
     color: var(--highlight);
     background: var(--panel);
-    border: 1px solid;
     border-color: var(--bevel-light) var(--bevel-dark) var(--panel) var(--bevel-light);
+    cursor: default;
 }
+.tab[aria-selected="false"] {
+    top: 3px;
+    z-index: 0;
+    padding-bottom: 3px;
+    color: var(--text);
+    background: var(--row);
+    border-bottom-color: var(--bevel-dark);
+    cursor: pointer;
+}
+.tab[aria-selected="false"]:hover { color: var(--highlight); }
+.tab:active { border-color: var(--bevel-light) var(--bevel-dark) var(--panel) var(--bevel-light); padding: 3px 14px 4px; }
+.tab[aria-selected="false"]:active { border-bottom-color: var(--bevel-dark); padding-bottom: 3px; }
+
+[role="tabpanel"][hidden] { display: none; }
+
+/* the map: squaremap's own page, sunken into the window like the server list */
+.mapframe {
+    height: min(68vh, 620px);
+    min-height: 320px;
+    margin: 0 12px;
+    background: var(--ground);
+    border: 1px solid;
+    border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+}
+.mapframe iframe { display: block; width: 100%; height: 100%; border: 0; }
 
 /* the server list: a sunken table with raised column headers */
 .serverlist {
@@ -188,8 +216,8 @@ h1 {
 }
 .hint { margin: 0; color: var(--muted); font-size: 13px; }
 
-/* VGUI button: raised bevel, pressed = sunken */
-button {
+/* VGUI button: raised bevel, pressed = sunken (a.button is a link dressed as one) */
+button, a.button {
     font: inherit;
     font-size: 13px;
     color: var(--text);
@@ -200,7 +228,9 @@ button {
     border-radius: 0;
     cursor: pointer;
 }
-button:hover { color: var(--highlight); }
+a.button { display: inline-block; line-height: 1.45; text-decoration: none; }
+button:hover, a.button:hover { color: var(--highlight); }
+a.button:active { border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark); padding: 5px 17px 3px 19px; }
 button:active { border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark); padding: 5px 17px 3px 19px; }
 button:disabled { color: var(--muted); cursor: progress; }
 
@@ -219,7 +249,10 @@ button:disabled { color: var(--muted); cursor: progress; }
 @media (max-width: 640px) {
     body { padding: 12px 8px 24px; font-size: 16px; }
     .statusbar, .footbar, .tabs { margin-left: 8px; margin-right: 8px; }
-    button { min-height: 44px; padding-left: 24px; padding-right: 24px; }
+    button, a.button { min-height: 44px; padding-left: 24px; padding-right: 24px; }
+    a.button { display: inline-flex; align-items: center; }
+    .tab { min-height: 40px; }
+    .mapframe { height: 64vh; margin: 0 8px; }
     .serverlist { width: calc(100% - 16px); margin: 0 8px; }
     .serverlist thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
     .serverlist tbody tr {

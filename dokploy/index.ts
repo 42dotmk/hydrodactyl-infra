@@ -20,6 +20,7 @@ const lanStatus = new LanStatus("lan-status", {
     repoUrl: lanStatusConfig.get("repoUrl") ?? "https://github.com/42dotmk/hydrodactyl-infra.git",
     branch: lanStatusConfig.get("branch") ?? "main",
     appDir: "apps/lan-status",
+    mapUpstream: lanStatusConfig.get("mapUpstream") ?? "http://192.168.101.39:25566",
 });
 
 export const lanStatusUrl = lanStatus.url;

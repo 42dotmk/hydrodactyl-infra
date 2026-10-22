@@ -18,8 +18,8 @@ top-left, dark #292c21 bottom-right), Tahoma/DejaVu Sans, Steam yellow #dccd5a f
 square status lamps, a row of 88x31 buttons like every clan site's footer.
 STORY: visitor sees what is up, how full it is and which map, then walks in and joins at the address.
 FIRST VIEWPORT: clan-site title bar "42.mk LAN", status bar (N of M online, players, updated), then the
-full-width server list under a single LAN tab (lamp, server, map, players, join address) with Refresh;
-the buttons row closes the page.
+full-width server list under the LAN tab (lamp, server, map, players, join address) with Refresh; the Map
+tab swaps the list for the Minecraft world map (squaremap, loaded on first open). The buttons row closes the page.
 FORM: pinned by the user (old-school LAN party web: server browser + clan site); roll seed 924c0c6f.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 -->
@@ -33,23 +33,37 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
             <span id="updated" class="updated"></span>
         </p>
 
-        <div class="tabs" role="presentation"><span class="tab">LAN</span></div>
-        <table class="serverlist" role="table" aria-describedby="summary">
-            <thead>
-                <tr role="row">
-                    <th scope="col" role="columnheader"><span class="sr">Status</span></th>
-                    <th scope="col" role="columnheader">Server</th>
-                    <th scope="col" role="columnheader">Map</th>
-                    <th scope="col" role="columnheader" class="num">Players</th>
-                    <th scope="col" role="columnheader">Join</th>
-                </tr>
-            </thead>
-            <tbody id="servers"></tbody>
-        </table>
+        <div class="tabs" role="tablist" aria-label="View">
+            <button type="button" class="tab" role="tab" id="tab-lan" aria-selected="true" aria-controls="panel-lan">LAN</button>
+            <button type="button" class="tab" role="tab" id="tab-map" aria-selected="false" aria-controls="panel-map" tabindex="-1">Map</button>
+        </div>
 
-        <div class="footbar">
-            <p class="hint">Join from inside the LAN at the address shown. Refreshes every 15&nbsp;seconds.</p>
-            <button type="button" id="refresh">Refresh</button>
+        <div id="panel-lan" role="tabpanel" aria-labelledby="tab-lan">
+            <table class="serverlist" role="table" aria-describedby="summary">
+                <thead>
+                    <tr role="row">
+                        <th scope="col" role="columnheader"><span class="sr">Status</span></th>
+                        <th scope="col" role="columnheader">Server</th>
+                        <th scope="col" role="columnheader">Map</th>
+                        <th scope="col" role="columnheader" class="num">Players</th>
+                        <th scope="col" role="columnheader">Join</th>
+                    </tr>
+                </thead>
+                <tbody id="servers"></tbody>
+            </table>
+
+            <div class="footbar">
+                <p class="hint">Join from inside the LAN at the address shown. Refreshes every 15&nbsp;seconds.</p>
+                <button type="button" id="refresh">Refresh</button>
+            </div>
+        </div>
+
+        <div id="panel-map" role="tabpanel" aria-labelledby="tab-map" hidden>
+            <div class="mapframe" id="mapframe"></div>
+            <div class="footbar">
+                <p class="hint">Live map of the Minecraft world. Drag to pan, scroll or pinch to zoom.</p>
+                <a class="button" href="/map/" target="_blank" rel="noopener">Full screen</a>
+            </div>
         </div>
     </div>
 
