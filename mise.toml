@@ -128,6 +128,18 @@ ssh -i /root/.ssh/wings-01_ed25519 -o StrictHostKeyChecking=accept-new ubuntu@$(
 description = "Build + install the CS 1.6 stack for a mode on its server: mise run cs16:deploy <classic|gungame|deathrun|biohazard>"
 run = "bash games/cs16/deploy.sh"
 
+[tasks."cs16:stats"]
+description = "Install/refresh the CS leaderboard exporter (lan-stats.service on wings-01, :8790)"
+run = "bash games/cs16/deploy.sh stats"
+
+[tasks."cs16:reset-stats"]
+description = "Wipe the all-time leaderboard: mise run cs16:reset-stats <classic|gungame|deathrun|biohazard|all>"
+run = "bash games/cs16/deploy.sh reset-stats"
+
+[tasks."cs16:test"]
+description = "Run the leaderboard exporter's tests"
+run = "python3 -m unittest discover -s games/cs16/stats"
+
 [tasks."minecraft:deploy"]
 description = "Install the pinned Paper plugins (squaremap) on the Minecraft server and set the map port"
 run = "bash games/minecraft/deploy.sh"

@@ -149,6 +149,12 @@ elif [ -n "$ADMIN_PASSWORD" ]; then
 fi
 for plugin in ${PLUGINS:-}; do grep -qx "$plugin" "$CS/addons/amxmodx/configs/plugins.ini" || echo "$plugin" >>"$CS/addons/amxmodx/configs/plugins.ini"; done
 
+# CSX all-time stats (lan.apps.42.mk leaderboards): rank by nickname - with non-Steam clients ReUnion
+# invents the IDs, so a name is the only identity players recognise. Bots stay unranked.
+AMXX_CFG=$CS/addons/amxmodx/configs/amxx.cfg
+setcfg "$AMXX_CFG" csstats_rank 0
+setcfg "$AMXX_CFG" csstats_rankbots 0
+
 # Map rotation and server settings
 printf '%s\n' ${MAPS:-} >"$CS/mapcycle.txt"
 CFG=$CS/server.cfg

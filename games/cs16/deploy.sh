@@ -1,10 +1,13 @@
 #!/bin/bash
-# Ships games/cs16 to the Wings node and runs build.sh there as root.
+# Ships games/cs16 to the Wings node and runs build.sh (or a stats/ script) there as root.
 # usage (from /root/hydrodactyl-infra): mise run cs16:deploy <classic|gungame|deathrun|biohazard>
+#        bash games/cs16/deploy.sh stats                    (mise run cs16:stats)
+#        bash games/cs16/deploy.sh reset-stats <mode|all>   (mise run cs16:reset-stats <mode|all>)
 # The AMXX admin password shared by all CS servers (players: setinfo _pw "<password>") is read from
 # .secrets/cs16-admin-password next to mise.toml, if that file exists; never commit it.
 set -euo pipefail
 MODE=${1:?usage: mise run cs16:deploy <mode>}
+[[ $MODE =~ ^[a-z0-9-]+$ && ${2:-all} =~ ^[a-z0-9]+$ ]] || { echo "invalid arguments" >&2; exit 1; }
 HERE=$(cd "$(dirname "$0")" && pwd)
 PROXMOX=$HERE/../../proxmox
 
@@ -13,9 +16,14 @@ KEY=$(mktemp); trap 'rm -f "$KEY"' EXIT; chmod 600 "$KEY"
 HOST=$(cd "$PROXMOX" && pulumi stack output --stack prod wingsAddress)
 SSH=(ssh -i "$KEY" -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/root/.ssh/known_hosts_wings -o LogLevel=ERROR "ubuntu@$HOST")
 REMOTE=/tmp/cs16-deploy-$$
+case $MODE in
+    stats) RUN="bash $REMOTE/stats/install.sh" ;;
+    reset-stats) RUN="bash $REMOTE/stats/reset.sh ${2:?usage: mise run cs16:reset-stats <mode|all>}" ;;
+    *) RUN="ADMIN_PASSWORD_FILE=$REMOTE/cs16-admin-password bash $REMOTE/build.sh $MODE" ;;
+esac
 
 SECRETS=$HERE/../../.secrets
 PW_FILE=()
 [ -s "$SECRETS/cs16-admin-password" ] && PW_FILE=(-C "$SECRETS" cs16-admin-password)
 tar -C "$HERE" -czf - . "${PW_FILE[@]}" | "${SSH[@]}" "mkdir -p -m 700 $REMOTE && tar -xzf - -C $REMOTE"
-"${SSH[@]}" "sudo ADMIN_PASSWORD_FILE=$REMOTE/cs16-admin-password bash $REMOTE/build.sh $MODE; rc=\$?; rm -rf $REMOTE; exit \$rc"
+"${SSH[@]}" "sudo $RUN; rc=\$?; rm -rf $REMOTE; exit \$rc"

@@ -25,3 +25,6 @@ Thumbs.db
 
 # impeccable design-detector hook cache (local)
 **/.impeccable/hook.cache.json
+
+# Python bytecode (games/cs16/stats tests)
+__pycache__/
