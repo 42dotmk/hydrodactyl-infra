@@ -25,7 +25,7 @@ an event page. Only this page knows what is running on 192.168.101.39 right now.
 ## Operating Context
 
 - Servers: CS 1.6 Classic, GunGame and Deathrun; Half-Life 2: Deathmatch; GTA San Andreas (SA-MP via
-  open.mp); Minecraft (Paper). Biohazard (CS 1.6) is planned.
+  open.mp); Minecraft (Paper); CS 1.6 Zombie Plague.
 - Joining happens from inside the LAN using the address shown (192.168.101.39:<port>).
 - Data refreshes every 15 s from a server-side poll (gamedig); visitors never trigger game-server queries.
 

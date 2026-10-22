@@ -2,7 +2,7 @@
     { "id": "cs-classic", "name": "CS 1.6 Classic", "type": "counterstrike16", "host": "192.168.101.39", "port": 27015 },
     { "id": "cs-gungame", "name": "CS 1.6 GunGame", "type": "counterstrike16", "host": "192.168.101.39", "port": 27018 },
     { "id": "cs-deathrun", "name": "CS 1.6 Deathrun", "type": "counterstrike16", "host": "192.168.101.39", "port": 27019 },
-    { "id": "cs-biohazard", "name": "CS 1.6 Biohazard (zombies)", "type": "counterstrike16", "host": "192.168.101.39", "port": 27020 },
+    { "id": "cs-zombieplague", "name": "CS 1.6 Zombie Plague", "type": "counterstrike16", "host": "192.168.101.39", "port": 27020 },
     { "id": "hl2dm", "name": "Half-Life 2: Deathmatch", "type": "hl2d", "host": "192.168.101.39", "port": 27016 },
     { "id": "samp", "name": "GTA San Andreas (SA-MP / open.mp)", "type": "gtasam", "host": "192.168.101.39", "port": 27017 },
     { "id": "minecraft", "name": "Minecraft (Paper)", "type": "minecraft", "host": "192.168.101.39", "port": 25565 }
