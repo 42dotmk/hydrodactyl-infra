@@ -1,0 +1,3 @@
+# Pinned Paper plugins: <jar file name> <sha512 as published by Modrinth> <download url>
+# Bump a plugin by changing all three together; install.sh removes other versions of the same plugin.
+squaremap-paper-mc26.3-1.4.3.jar 8e3fde14937a8ff7776a37f43385942ff76bab4d2a5f9e9d5290a22c5dc26b21fbde666439e48b0f128e09083ac06b96e56263e2ee740e8550bc5c61e408a4c1 https://cdn.modrinth.com/data/PFb7ZqK6/versions/6wmZVQBO/squaremap-paper-mc26.3-1.4.3.jar

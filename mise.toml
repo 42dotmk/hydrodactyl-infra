@@ -128,6 +128,10 @@ ssh -i /root/.ssh/wings-01_ed25519 -o StrictHostKeyChecking=accept-new ubuntu@$(
 description = "Build + install the CS 1.6 stack for a mode on its server: mise run cs16:deploy <classic|gungame|deathrun|biohazard>"
 run = "bash games/cs16/deploy.sh"
 
+[tasks."minecraft:deploy"]
+description = "Install the pinned Paper plugins (squaremap) on the Minecraft server and set the map port"
+run = "bash games/minecraft/deploy.sh"
+
 [tasks."lan-status:test"]
 description = "Run the LAN status site's tests (app + Pulumi revision helper)"
 run = """
