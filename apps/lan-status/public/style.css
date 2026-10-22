@@ -206,6 +206,16 @@ h1 {
 
 .offline .server, .offline .map, .offline .num, .offline .join { color: var(--muted); font-weight: 400; }
 
+/* the leaderboards: same list box, one raised group row per server, then its ranked players */
+.statslist .rank { width: 36px; color: var(--muted); }
+.statslist .player { font-family: var(--data); font-size: 14px; }
+.statslist .detail { display: none; }
+.statslist tr.group th { font-size: 14px; font-weight: 700; }
+.statslist tr.group .saved { margin-left: 8px; font-size: 13px; font-weight: 400; color: var(--muted); }
+.statslist tr.empty td { color: var(--muted); font-size: 13px; }
+.serverlist tbody tr:hover .player { color: var(--highlight); }
+.serverlist tbody tr.group:hover, .serverlist tbody tr.empty:hover { background: var(--row); }
+
 .footbar {
     display: flex;
     flex-wrap: wrap;
@@ -272,4 +282,12 @@ button:disabled { color: var(--muted); cursor: progress; }
     .join { grid-area: join; }
     .map::before { content: "map "; color: var(--muted); }
     .map:empty { display: none; }
+    .statslist tbody tr { grid-template-columns: 30px 1fr auto; grid-template-areas: "rank player score" ". detail detail"; }
+    .statslist tbody tr.group, .statslist tbody tr.empty { display: block; padding: 0; }
+    .statslist tr.group th, .statslist tr.empty td { display: block; padding: 6px 8px; }
+    .statslist .rank { grid-area: rank; width: auto; }
+    .statslist .player { grid-area: player; }
+    .statslist .score { grid-area: score; }
+    .statslist .kills, .statslist .deaths, .statslist .kd, .statslist .hs { display: none; }
+    .statslist .detail { display: block; grid-area: detail; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
 }

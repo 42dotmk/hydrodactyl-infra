@@ -21,6 +21,7 @@ const lanStatus = new LanStatus("lan-status", {
     branch: lanStatusConfig.get("branch") ?? "main",
     appDir: "apps/lan-status",
     mapUpstream: lanStatusConfig.get("mapUpstream") ?? "http://192.168.101.39:25566",
+    statsUpstream: lanStatusConfig.get("statsUpstream") ?? "http://192.168.101.39:8790",
 });
 
 export const lanStatusUrl = lanStatus.url;

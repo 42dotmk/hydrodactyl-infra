@@ -40,3 +40,21 @@ export function updatedText(updatedAt, state, nowMs) {
     if (!updatedAt) return reason;
     return `last update ${ago(updatedAt, nowMs)} · ${reason}`;
 }
+
+// --- Stats tab (all-time CSX leaderboards) ---
+
+export function kdText(kills, deaths) {
+    return (kills / Math.max(deaths, 1)).toFixed(2);
+}
+
+export function hsText(headshots, kills) {
+    return kills > 0 ? `${Math.round((headshots / kills) * 100)}%` : "—";
+}
+
+/** CSX writes its stats file when a map ends, so that is when the board last changed. */
+export function savedText(savedAt) {
+    if (!savedAt) return "no games recorded yet";
+    const t = new Date(savedAt);
+    const hhmm = `${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
+    return `saved at map change, ${hhmm}`;
+}

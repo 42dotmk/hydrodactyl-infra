@@ -1,5 +1,5 @@
 // HTTP front of the status board. Fixed route table: no file path is ever built from the request URL,
-// and /api/status only reads the poller's in-memory snapshot (visitors never trigger queries).
+// and /api/status and /api/stats only read in-memory snapshots (visitors never trigger queries).
 // /map/ is the one pass-through: squaremap's web server on the Minecraft server, for the Map tab.
 import http from "node:http";
 import { readFileSync } from "node:fs";
@@ -42,7 +42,7 @@ for (const file of BADGES) STATIC[`/badges/${file}`] = [`badges/${file}`, IMAGE_
 // devices without Tahoma/Verdana (Android).
 for (const file of ["dejavu-sans.woff2", "dejavu-sans-bold.woff2"]) STATIC[`/fonts/${file}`] = [`fonts/${file}`, "font/woff2"];
 
-export function createServer({ poller, publicDir, mapUpstream = null, mapTimeoutMs = 10_000 }) {
+export function createServer({ poller, publicDir, stats = null, mapUpstream = null, mapTimeoutMs = 10_000 }) {
     const assets = Object.fromEntries(Object.entries(STATIC).map(([route, [file, type]]) =>
         [route, { body: readFileSync(new URL(file, publicDir)), type }]));
 
@@ -56,6 +56,9 @@ export function createServer({ poller, publicDir, mapUpstream = null, mapTimeout
         if (mapUpstream && (path === "/map" || path.startsWith("/map/"))) return serveMap(req, res, send);
         if (path === "/api/status") {
             return send(200, "application/json; charset=utf-8", JSON.stringify(poller.snapshot()), { "Cache-Control": "no-store" });
+        }
+        if (path === "/api/stats" && stats) {
+            return send(200, "application/json; charset=utf-8", JSON.stringify(stats.snapshot()), { "Cache-Control": "no-store" });
         }
         if (path === "/healthz") return send(200, "text/plain; charset=utf-8", "ok", { "Cache-Control": "no-store" });
         const asset = assets[path];

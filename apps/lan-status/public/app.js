@@ -1,6 +1,6 @@
 // Renders /api/status into the server list. Every value goes in through textContent: server-reported
 // strings (map names, hostnames) are never interpreted as HTML.
-import { REFRESH_MS, statusText, playersText, freshness, summaryText, updatedText } from "/render.js";
+import { REFRESH_MS, statusText, playersText, freshness, summaryText, updatedText, kdText, hsText, savedText } from "/render.js";
 
 const FIRST_POLL_RETRY_MS = 3000; // right after a deploy, the first poll lands within ~3 s
 let snapshot = { updatedAt: null, summary: { online: 0, total: 0, players: 0 }, servers: [] };
@@ -89,9 +89,66 @@ async function loop() {
     setTimeout(loop, snapshot.updatedAt ? REFRESH_MS : FIRST_POLL_RETRY_MS);
 }
 
-// Tabs: LAN (the server list) and Map (squaremap, framed from /map/). The map is only requested the
-// first time its tab opens, so visitors who never look at it cost the Minecraft server nothing.
+// --- Stats tab: all-time CSX leaderboards from /api/stats, one group of rows per CS server ---
+const STATS_REFRESH_MS = 30000;
+let statsTimer = null;
+
+function statsRows(board) {
+    const group = document.createElement("tr");
+    group.setAttribute("role", "row");
+    group.className = "group";
+    const th = document.createElement("th");
+    th.setAttribute("role", "rowheader");
+    th.colSpan = 7;
+    const saved = document.createElement("span");
+    saved.className = "saved";
+    saved.textContent = savedText(board.savedAt);
+    th.append(board.name, " ", saved);
+    group.append(th);
+    if (board.players.length === 0) {
+        const empty = document.createElement("tr");
+        empty.setAttribute("role", "row");
+        empty.className = "empty";
+        const td = cell("hint", "No ranked players yet: stats are saved when a map ends.");
+        td.colSpan = 7;
+        empty.append(td);
+        return [group, empty];
+    }
+    return [group, ...board.players.map((p, i) => {
+        const tr = document.createElement("tr");
+        tr.setAttribute("role", "row");
+        const detail = `K ${p.kills} · D ${p.deaths} · K/D ${kdText(p.kills, p.deaths)} · HS ${hsText(p.headshots, p.kills)}`;
+        tr.append(cell("num rank", String(i + 1)), cell("player", p.name), cell("num score", String(p.score)),
+            cell("num kills", String(p.kills)), cell("num deaths", String(p.deaths)),
+            cell("num kd", kdText(p.kills, p.deaths)), cell("num hs", hsText(p.headshots, p.kills)),
+            cell("detail", detail));
+        return tr;
+    })];
+}
+
+async function refreshStats() {
+    const button = document.getElementById("stats-refresh");
+    const hint = document.getElementById("stats-hint");
+    button.disabled = true;
+    try {
+        const res = await fetch("/api/stats", { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const snap = await res.json();
+        document.getElementById("stats").replaceChildren(...snap.servers.flatMap(statsRows));
+        hint.textContent = snap.failed
+            ? "Stats service unreachable; showing the last boards received."
+            : "All-time, ranked like /top15 in game: kills − deaths − team kills.";
+    } catch {
+        hint.textContent = "Stats unavailable right now, retrying.";
+    } finally {
+        button.disabled = false;
+    }
+}
+
+// --- Tabs: LAN (the server list), Map (squaremap, framed from /map/) and Stats. The map and the stats
+// are only requested once their tab is open, so visitors who never look cost the servers nothing.
 const tabs = [...document.querySelectorAll('[role="tab"]')];
+const HASHES = { "#map": "tab-map", "#stats": "tab-stats" };
 
 function openMap() {
     const frame = document.getElementById("mapframe");
@@ -110,7 +167,13 @@ function selectTab(tab, { focus = false } = {}) {
         document.getElementById(t.getAttribute("aria-controls")).hidden = !selected;
     }
     if (tab.id === "tab-map") openMap();
-    history.replaceState(null, "", tab.id === "tab-map" ? "#map" : location.pathname);
+    clearInterval(statsTimer);
+    if (tab.id === "tab-stats") {
+        refreshStats();
+        statsTimer = setInterval(refreshStats, STATS_REFRESH_MS);
+    }
+    const hash = Object.keys(HASHES).find((h) => HASHES[h] === tab.id);
+    history.replaceState(null, "", hash ?? location.pathname);
     if (focus) tab.focus();
 }
 
@@ -124,10 +187,11 @@ for (const tab of tabs) {
         selectTab(tabs[(next + tabs.length) % tabs.length], { focus: true });
     });
 }
-const tabForHash = () => document.getElementById(location.hash === "#map" ? "tab-map" : "tab-lan");
+const tabForHash = () => document.getElementById(HASHES[location.hash] ?? "tab-lan");
 window.addEventListener("hashchange", () => selectTab(tabForHash()));
-if (location.hash === "#map") selectTab(tabForHash());
+if (HASHES[location.hash]) selectTab(tabForHash());
 
+document.getElementById("stats-refresh").addEventListener("click", refreshStats);
 document.getElementById("refresh").addEventListener("click", refresh);
 loop();
 setInterval(render, 1000);

@@ -125,9 +125,13 @@ test("without a map upstream /map/ does not exist", async () => {
     assert.equal((await fetch(`${bareBase}/map/`)).status, 404);
 });
 
-test("the page offers a LAN tab and a Map tab, and loads no map until asked", async () => {
+test("the page offers LAN, Map and Stats tabs, each with a panel, and loads no map until asked", async () => {
     const html = await readFile(new URL("index.html", publicDir), "utf8");
     const tabs = [...html.matchAll(/<button\b[^>]*role="tab"[^>]*>([^<]*)<\/button>/g)].map((m) => m[1].trim());
-    assert.deepEqual(tabs, ["LAN", "Map"]);
+    assert.deepEqual(tabs, ["LAN", "Map", "Stats"]);
+    for (const id of ["panel-lan", "panel-map", "panel-stats"]) {
+        assert.match(html, new RegExp(`aria-controls="${id}"`), id);
+        assert.match(html, new RegExp(`<div id="${id}" role="tabpanel"`), id);
+    }
     assert.ok(!/<iframe\b/.test(html), "the map iframe is created on first open, not on page load");
 });
