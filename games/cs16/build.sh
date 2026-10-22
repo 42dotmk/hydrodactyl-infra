@@ -111,9 +111,15 @@ for map in ${MAPS:-}; do
     [ -f "$archive" ] || curl -fsSL -o "$archive" "$url"
     echo "$md5  $archive" | md5sum -c --quiet - || { rm -f "$archive"; echo "$map: md5 mismatch" >&2; exit 1; }
     mkdir -p "$WORK/map-$map"
-    # bsdtar (alpine) reads zip and rar; the archive is mounted read-only and only /x is writable
-    docker run --rm -v "$archive:/a:ro" -v "$WORK/map-$map:/x" "$UNPACK_IMAGE" \
-        sh -c 'apk add -q --no-cache libarchive-tools >/dev/null && bsdtar -xf /a -C /x' 
+    # bsdtar (alpine) reads zip and most rar; RARs with compression filters (zm_italy) need unar.
+    # The archive is mounted read-only and only /x is writable.
+    if ! docker run --rm -v "$archive:/a:ro" -v "$WORK/map-$map:/x" "$UNPACK_IMAGE" \
+        sh -c 'apk add -q --no-cache libarchive-tools >/dev/null && bsdtar -xf /a -C /x' 2>/dev/null; then
+        log "map $map: bsdtar failed, unpacking with unar"
+        rm -rf "$WORK/map-$map" && mkdir -p "$WORK/map-$map"
+        docker run --rm -v "$archive:/a:ro" -v "$WORK/map-$map:/x" "$RAR_IMAGE" sh -c \
+            'apt-get update -qq >/dev/null && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq unar >/dev/null && unar -q -D -o /x /a >/dev/null'
+    fi
     python3 -I "$HERE/tools/stage_map.py" "$WORK/map-$map" "$OUT" "$CS" "$VOL/valve"
 done
 
@@ -136,6 +142,10 @@ sed -i -E 's|^gamedll_linux .*|gamedll_linux "addons/metamod/metamod_i386.so"|' 
 if [ ! -f "$CS/reunion.cfg" ]; then
     sed -E "s|^SteamIdHashSalt =.*|SteamIdHashSalt = $(openssl rand -hex 24)|" "$WORK/reunion/reunion.cfg" >"$CS/reunion.cfg"
 fi
+# With sv_lan 1 the official Steam client skips its Steam ticket and arrives as a "no-steam" p.47/p.48
+# client, which ReUnion rejects by default (5). Give those an IP-based STEAM_ id (3) instead; on the LAN
+# every player connects from their own address. Enforced on every build, the file itself is kept.
+sed -i -E 's/^(cid_NoSteam4[78][[:space:]]*=).*/\1 3/' "$CS/reunion.cfg"
 
 # AMXX admin by name + password (SteamIDs are not trustworthy with non-Steam clients)
 USERS=$CS/addons/amxmodx/configs/users.ini
