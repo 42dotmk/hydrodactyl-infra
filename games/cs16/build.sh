@@ -26,6 +26,7 @@ ADMIN_NAME=${ADMIN_NAME:-telenoodle}
 CACHE=/var/cache/cs16-build
 COMPILER_IMAGE=ghcr.io/parkervcp/games:source   # has the 32-bit libs amxxpc needs
 UNPACK_IMAGE=alpine:3.22                        # bsdtar for the .rar map archives
+RAR_IMAGE=debian:13-slim                        # unar: bsdtar and 7-Zip fail on the Biohazard RAR
 WORK=$(mktemp -d /tmp/cs16-build.XXXXXX)
 trap 'rm -rf "$WORK"' EXIT
 OUT=$WORK/cstrike
@@ -78,6 +79,18 @@ case $MODE in
         f=$(fetch src-deathrun); mkdir -p "$WORK/src"; tar -xzf "$f" -C "$WORK/src" --strip-components=1
         cp -a "$WORK/src/addons/amxmodx/scripting/." "$SCRIPTING/"
         cp -a "$WORK/src/addons/amxmodx/data/." "$OUT/addons/amxmodx/data/"
+        ;;
+    biohazard)
+        f=$(fetch src-biohazard); mkdir -p "$WORK/src"
+        docker run --rm -v "$f:/a.rar:ro" -v "$WORK/src:/x" "$RAR_IMAGE" sh -c \
+            'apt-get update -qq >/dev/null && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq unar >/dev/null && unar -q -D -o /x /a.rar >/dev/null'
+        # Sources only: the archive's prebuilt plugins/*.amxx are skipped, and so are plugins-bio.ini
+        # (PLUGINS lists what loads) and the csdm/ spawn files (bh_randomspawn stays 0).
+        # scripting/biohazard.cfg is the compile-time #tryinclude with models, sounds and weapon menus.
+        cp -a "$WORK/src/addons/amxmodx/scripting/." "$SCRIPTING/"
+        cp "$WORK/src/addons/amxmodx/configs/bh_cvars.cfg" "$WORK/src/addons/amxmodx/configs/bh_zombieclass.ini" "$OUT/addons/amxmodx/configs/"
+        cp "$WORK/src/addons/amxmodx/data/lang/biohazard.txt" "$OUT/addons/amxmodx/data/lang/"
+        cp -a "$WORK/src/models" "$WORK/src/sound" "$OUT/"
         ;;
 esac
 for plugin in ${PLUGINS:-}; do

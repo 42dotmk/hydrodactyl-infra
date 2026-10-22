@@ -8,4 +8,7 @@ amxx-cstrike    686d875010792d84ac765d2f78af227ab7000c9b567995ea56b836e0a41fc7a7
 yapb            8c095ac89b9b2ccc70a66a71d608e1a570b5268c57c6083ced8c06161533a4b1 https://github.com/yapb/yapb/releases/download/4.4.957/yapb-4.4.957-linux.tar.xz
 # Plugin sources, pinned to commits (compiled on the server from .sma, never shipped as binaries)
 src-gungame     fe03425fd1f165070ec2693edb395352aded280b80b6dd56fd24d7f562d1af09 https://codeload.github.com/fysiks1/amxx-gungame_cstrike/tar.gz/8024d1ef35cddf357ce18b277bde2c6422cab56d
+# Cheap_Suit's Biohazard v2.00 Beta 3b (AlliedModders attachment 29417, Cloudflare-gated there), from the
+# Internet Archive's 2009 capture; same SHA-1 as every capture 2008-2010. Bundles the zombie models and sounds.
+src-biohazard   ec26e8ea2ce26abd1351934a787832d6fa8c122560cabab0e7230e3e2894a84a https://web.archive.org/web/20091128014526id_/http://forums.alliedmods.net/attachment.php?attachmentid=29417&d=1217135633
 src-deathrun    0bd3135bca8bb3b1a08f1d74435ffc8094d348766efc59ae02463753f6ba1020 https://codeload.github.com/Mistrick/DeathrunMod/tar.gz/bc1e96e12ec6545bab7911b60e57ed1a3e48dede

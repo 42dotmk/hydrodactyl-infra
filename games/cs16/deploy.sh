@@ -1,6 +1,6 @@
 #!/bin/bash
 # Ships games/cs16 to the Wings node and runs build.sh there as root.
-# usage (from /root/hydrodactyl-infra): mise run cs16:deploy <classic|gungame|deathrun>
+# usage (from /root/hydrodactyl-infra): mise run cs16:deploy <classic|gungame|deathrun|biohazard>
 # The AMXX admin password shared by all CS servers (players: setinfo _pw "<password>") is read from
 # .secrets/cs16-admin-password next to mise.toml, if that file exists; never commit it.
 set -euo pipefail
