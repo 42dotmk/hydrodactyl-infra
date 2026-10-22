@@ -7,7 +7,7 @@ Configs, addons/ (users.ini holds the admin password) and anything else are 404.
 sandboxed systemd service (cs16-fastdl.service, written by install.sh) that sees each cstrike directory
 read-only, with addons/ and the config files masked as well.
 
-usage: fastdl.py --listen 192.168.101.39:27080 biohazard=/path/to/cstrike [classic=...]
+usage: fastdl.py --listen 192.168.101.39:27080 zombieplague=/path/to/cstrike [classic=...]
 """
 import argparse
 import os

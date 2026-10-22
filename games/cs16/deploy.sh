@@ -1,6 +1,6 @@
 #!/bin/bash
 # Ships games/cs16 to the Wings node and runs build.sh (or a stats/ script) there as root.
-# usage (from /root/hydrodactyl-infra): mise run cs16:deploy <classic|gungame|deathrun|biohazard>
+# usage (from /root/hydrodactyl-infra): mise run cs16:deploy <classic|gungame|deathrun|zombieplague>
 #        bash games/cs16/deploy.sh stats                    (mise run cs16:stats)
 #        bash games/cs16/deploy.sh fastdl                   (mise run cs16:fastdl)
 #        bash games/cs16/deploy.sh reset-stats <mode|all>   (mise run cs16:reset-stats <mode|all>)

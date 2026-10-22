@@ -10,7 +10,7 @@ deathrun_cxx-inc     48e9c3b158b51c0fb2286526dac2efbb https://gamebanana.com/dl/
 deathrun_projetocs2  fb4bbcc9d2143db5ca4d359aad8d6d07 https://gamebanana.com/dl/364352
 deathrun_xmas        e3ac49fbb59d9b5e5d9735b3924e6e76 https://gamebanana.com/dl/320361
 deathrun_pyramid     cfd89f87aaf9206e2feb7c7397adbd18 https://gamebanana.com/dl/486265
-# Zombie maps for Biohazard (zm_toxic_house is left out: its archive ships ZM_TOXICHOUSE.bsp in capitals)
+# Zombie maps for Zombie Plague (zm_toxic_house is left out: its archive ships ZM_TOXICHOUSE.bsp in capitals)
 zm_dust_world        f1c569b8b13eedc49ba134b3f7dbfe9f https://gamebanana.com/dl/481894
 zm_ice_attack        edc952f73271291078b5323120f91405 https://gamebanana.com/dl/482347
 zm_boatescape        ab14812224b407701b50997df7ff7fda https://gamebanana.com/dl/293132

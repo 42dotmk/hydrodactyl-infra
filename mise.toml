@@ -125,7 +125,7 @@ ssh -i /root/.ssh/wings-01_ed25519 -o StrictHostKeyChecking=accept-new ubuntu@$(
 # --- games -----------------------------------------------------------------
 
 [tasks."cs16:deploy"]
-description = "Build + install the CS 1.6 stack for a mode on its server: mise run cs16:deploy <classic|gungame|deathrun|biohazard>"
+description = "Build + install the CS 1.6 stack for a mode on its server: mise run cs16:deploy <classic|gungame|deathrun|zombieplague>"
 run = "bash games/cs16/deploy.sh"
 
 [tasks."cs16:stats"]
@@ -137,7 +137,7 @@ description = "Install/refresh CS fast download (cs16-fastdl.service on wings-01
 run = "bash games/cs16/deploy.sh fastdl"
 
 [tasks."cs16:reset-stats"]
-description = "Wipe the all-time leaderboard: mise run cs16:reset-stats <classic|gungame|deathrun|biohazard|all>"
+description = "Wipe the all-time leaderboard: mise run cs16:reset-stats <classic|gungame|deathrun|zombieplague|all>"
 run = "bash games/cs16/deploy.sh reset-stats"
 
 [tasks."cs16:test"]
