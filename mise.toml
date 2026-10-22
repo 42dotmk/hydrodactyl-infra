@@ -132,13 +132,17 @@ run = "bash games/cs16/deploy.sh"
 description = "Install/refresh the CS leaderboard exporter (lan-stats.service on wings-01, :8790)"
 run = "bash games/cs16/deploy.sh stats"
 
+[tasks."cs16:fastdl"]
+description = "Install/refresh CS fast download (cs16-fastdl.service on wings-01, :27080) after adding a mode"
+run = "bash games/cs16/deploy.sh fastdl"
+
 [tasks."cs16:reset-stats"]
 description = "Wipe the all-time leaderboard: mise run cs16:reset-stats <classic|gungame|deathrun|biohazard|all>"
 run = "bash games/cs16/deploy.sh reset-stats"
 
 [tasks."cs16:test"]
-description = "Run the leaderboard exporter's tests"
-run = "python3 -m unittest discover -s games/cs16/stats"
+description = "Run the leaderboard exporter's and fast download's tests"
+run = "python3 -m unittest discover -s games/cs16/stats && python3 -m unittest discover -s games/cs16/fastdl"
 
 [tasks."minecraft:deploy"]
 description = "Install the pinned Paper plugins (squaremap) on the Minecraft server and set the map port"

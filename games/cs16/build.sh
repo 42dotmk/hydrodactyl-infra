@@ -171,6 +171,10 @@ CFG=$CS/server.cfg
 setcfg "$CFG" hostname "\"$HOSTNAME\""
 setcfg "$CFG" sv_lan 1
 setcfg "$CFG" mapcyclefile '"mapcycle.txt"'
+# HTTP fast download (games/cs16/fastdl, mise run cs16:fastdl): clients fetch custom maps, models and
+# sounds at LAN speed instead of through the game connection; files it lacks still come the slow way.
+setcfg "$CFG" sv_allowdownload 1
+setcfg "$CFG" sv_downloadurl "\"http://192.168.101.39:27080/$MODE/\""
 if [ "${BOTS:-0}" = 1 ]; then
     setcfg "$CFG" yb_quota "$BOT_QUOTA"
     setcfg "$CFG" yb_quota_mode '"fill"'

@@ -2,6 +2,7 @@
 # Ships games/cs16 to the Wings node and runs build.sh (or a stats/ script) there as root.
 # usage (from /root/hydrodactyl-infra): mise run cs16:deploy <classic|gungame|deathrun|biohazard>
 #        bash games/cs16/deploy.sh stats                    (mise run cs16:stats)
+#        bash games/cs16/deploy.sh fastdl                   (mise run cs16:fastdl)
 #        bash games/cs16/deploy.sh reset-stats <mode|all>   (mise run cs16:reset-stats <mode|all>)
 # The AMXX admin password shared by all CS servers (players: setinfo _pw "<password>") is read from
 # .secrets/cs16-admin-password next to mise.toml, if that file exists; never commit it.
@@ -18,6 +19,7 @@ SSH=(ssh -i "$KEY" -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o 
 REMOTE=/tmp/cs16-deploy-$$
 case $MODE in
     stats) RUN="bash $REMOTE/stats/install.sh" ;;
+    fastdl) RUN="bash $REMOTE/fastdl/install.sh" ;;
     reset-stats) RUN="bash $REMOTE/stats/reset.sh ${2:?usage: mise run cs16:reset-stats <mode|all>}" ;;
     *) RUN="ADMIN_PASSWORD_FILE=$REMOTE/cs16-admin-password bash $REMOTE/build.sh $MODE" ;;
 esac
