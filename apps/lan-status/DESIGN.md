@@ -179,6 +179,9 @@ Every corner is square (radius 0). The only shapes are rectangles: frames, strip
 ### Tabs
 Three VGUI property-sheet tabs, LAN, Map and Stats, 2px apart. The selected tab is raised and joins the panel beneath it: its bottom edge takes the panel colour and it is nudged down 1px, so it reads as attached, and its label is in Steam yellow. The other tab sits 2px lower on the row-stripe colour with a Bevel Dark bottom edge, so it is not attached; its label is body text and turns yellow on hover. Arrow keys, Home and End move between them, and `#map` or `#stats` in the address selects that tab. The map loads only the first time its tab opens; the leaderboards load when their tab opens and refresh every 30 seconds while it stays open.
 
+### Scrollbars
+VGUI scrollbars everywhere (the page and the list boxes), 16px wide: a sunken track in the row-stripe colour with a Bevel Dark top-left edge, a raised thumb in the panel colour, and one square raised arrow button at each end with an 8px console-text triangle; a pressed button sinks. Chromium and Safari draw them; Firefox only takes `scrollbar-color` (panel thumb on row-stripe track), which is applied to Firefox alone because Chromium switches the custom scrollbar styles off when it is set.
+
 ### Leaderboards
 The Stats pane reuses the server list's table grammar. Each CS server gets a raised group row (server name in 14px bold, then "saved at map change, HH:MM" in muted 13px), followed by its top 15 players: a muted rank, the player name in the data monospace (it is server-reported), then Score, Kills, Deaths, K/D and HS% in tabular figures. A server with no ranked players shows one muted line saying stats are saved when a map ends. Hovering a player row turns the name yellow; group and empty rows do not react. At <=640px a player row becomes rank, name and score on the first line and "K · D · K/D · HS" on the second.
 

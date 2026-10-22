@@ -36,7 +36,39 @@
 
 * { box-sizing: border-box; }
 
-html { background: var(--ground); scrollbar-color: var(--bevel-light) var(--ground); }
+html { background: var(--ground); }
+
+/* VGUI scrollbars: a sunken track, a raised panel-coloured thumb and square raised arrow buttons that
+   press in. Chromium and Safari draw these; Firefox only takes colours. scrollbar-color must stay out
+   of Chromium's way, because setting it there switches the ::-webkit-scrollbar styles off. */
+@supports not selector(::-webkit-scrollbar) {
+    html { scrollbar-color: var(--panel) var(--row); }
+}
+::-webkit-scrollbar { width: 16px; height: 16px; background: var(--row); }
+::-webkit-scrollbar-track { background: var(--row); box-shadow: inset 1px 1px 0 var(--bevel-dark); }
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-button {
+    background-color: var(--panel);
+    box-shadow: inset 1px 1px 0 var(--bevel-light), inset -1px -1px 0 var(--bevel-dark);
+}
+/* one arrow at each end, whatever the platform's own button layout (:single-button never matches on macOS) */
+::-webkit-scrollbar-button { display: none; }
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment {
+    display: block;
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 8px 8px;
+}
+::-webkit-scrollbar-button:active { box-shadow: inset 1px 1px 0 var(--bevel-dark), inset -1px -1px 0 var(--bevel-light); }
+/* arrows: 8x8 pixel triangles in the console text colour (#dee5d7) */
+::-webkit-scrollbar-button:vertical:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M4 2 7 6H1z' fill='%23dee5d7'/%3E%3C/svg%3E"); }
+::-webkit-scrollbar-button:vertical:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M1 2h6L4 6z' fill='%23dee5d7'/%3E%3C/svg%3E"); }
+::-webkit-scrollbar-button:horizontal:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M2 4 6 1v6z' fill='%23dee5d7'/%3E%3C/svg%3E"); }
+::-webkit-scrollbar-button:horizontal:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M6 4 2 1v6z' fill='%23dee5d7'/%3E%3C/svg%3E"); }
+::-webkit-scrollbar-corner { background: var(--panel); }
 
 /* centred in the viewport when it fits; a taller page (phones) just scrolls from the top */
 body {
