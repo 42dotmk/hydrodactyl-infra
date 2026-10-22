@@ -6,7 +6,8 @@
 #   + mode plugins compiled from pinned sources + maps from maps.lock
 #
 # Safe while the server runs: files are replaced as new inodes, the restart picks them up.
-# Never overwritten once present: reunion.cfg (salt) and amxmodx/configs/users.ini (admin password).
+# Never overwritten once present: reunion.cfg (salt) and amxmodx/configs/users.ini, except that the
+# admin's password is set to the shared one from deploy.sh (ADMIN_PASSWORD_FILE) when given.
 set -euo pipefail
 
 MODE=${1:?usage: build.sh <mode>}
@@ -125,9 +126,13 @@ fi
 
 # AMXX admin by name + password (SteamIDs are not trustworthy with non-Steam clients)
 USERS=$CS/addons/amxmodx/configs/users.ini
+ADMIN_PASSWORD=$( [ -s "${ADMIN_PASSWORD_FILE:-}" ] && tr -d '\r\n' <"$ADMIN_PASSWORD_FILE" || true)
+case $ADMIN_PASSWORD in *[\"\\\|\&]*) echo "admin password must not contain \" \\ | or &" >&2; exit 1 ;; esac
 if ! grep -q "^\"$ADMIN_NAME\"" "$USERS"; then
-    printf '"%s" "%s" "abcdefghijklmnopqrstu" "a"\n' "$ADMIN_NAME" "$(openssl rand -hex 8)" >>"$USERS"
+    printf '"%s" "%s" "abcdefghijklmnopqrstu" "a"\n' "$ADMIN_NAME" "${ADMIN_PASSWORD:-$(openssl rand -hex 8)}" >>"$USERS"
     log "created admin '$ADMIN_NAME' - password is in cstrike/addons/amxmodx/configs/users.ini (panel file manager)"
+elif [ -n "$ADMIN_PASSWORD" ]; then
+    sed -i -E "s|^(\"$ADMIN_NAME\" )\"[^\"]*\"|\\1\"$ADMIN_PASSWORD\"|" "$USERS"
 fi
 for plugin in ${PLUGINS:-}; do grep -qx "$plugin" "$CS/addons/amxmodx/configs/plugins.ini" || echo "$plugin" >>"$CS/addons/amxmodx/configs/plugins.ini"; done
 
